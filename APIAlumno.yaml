@@ -1,0 +1,248 @@
+swagger: '2.0'
+info:
+  description: API para la gestión de los alumnos de la Universidad
+  version: 1.0.0
+  title: API Alumno
+host: 'localhost:8080'
+basePath: /apiAlumno
+tags:
+  - name: Alumnos
+    description: operaciones sobre alumnos
+schemes:
+  - https
+paths:
+  /alumnos:
+    get:
+      tags:
+        - Alumnos
+      summary: Obtiene los alumnos
+      description: Obtiene un listado de alumnos del sistema.
+      operationId: obtener_alumno
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tamanoPagina
+          in: query
+          description: Número de alumnos devueltas
+          required: false
+          type: integer
+        - name: numeroPaginas
+          in: query
+          description: Número de páginas devueltas
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Una lista de alumnos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alumno'
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+  /alumno:
+    post:
+      tags:
+        - Alumnos
+      summary: Crea un alumno
+      description: Añade un alumno a la lista.
+      operationId: crear_alumno
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: alumno
+          description: El alumno que se va a añadir.
+          required: true
+          schema:
+            $ref: '#/definitions/Alumno'
+      responses:
+        '200':
+          description: Alumno creado correctamente.
+        '400':
+          description: El alumno no ha podido ser creado.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+  '/alumno/{dni}':
+    get:
+      tags:
+        - Alumnos
+      summary: Devuelve un alumno.
+      description: Devuelve un alumno por su dni.
+      operationId: get_alumno
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          description: El dni del alumno
+          type: string
+      responses:
+        '200':
+          description: Un Alumno
+          schema:
+            $ref: '#/definitions/Alumno'
+        '404':
+          description: El Alumno no existe.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+    delete:
+      tags:
+        - Alumnos
+      summary: elimina un alumno
+      description: elimina un alumno de la lista
+      operationId: borrar_alumno
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          description: dni del alumno a eliminar
+          type: string
+      responses:
+        '204':
+          description: Alumno eliminado.
+        '400':
+          description: No se pudo eliminar el alumno.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+  /alumno/carrera:
+    get:
+      tags:
+        - Alumnos
+      summary: Alumnos de una carrera.
+      description: Devuelve los alumnos de una carrera.
+      operationId: get_alumnos_por_carrera
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: carrera
+          in: query
+          required: true
+          description: La carrera de la Universidad
+          type: string
+          enum:
+            - Ingeniería informática
+            - Ingeniería de telecomunicaciones
+            - Ingeniería industrial
+      responses:
+        '200':
+          description: Una lista de alumnos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alumno'
+        '404':
+          description: No hay alumnos matriculados en esa carrera.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+  /alumno/asignatura:
+    get:
+      tags:
+        - Alumnos
+      summary: Alumnos de una asignatura.
+      description: Devuelve los alumnos de una asignatura.
+      operationId: get_alumnos_por_asignatura
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: asignatura
+          in: query
+          required: true
+          description: La asignatura de la Universidad
+          type: string
+      responses:
+        '200':
+          description: Una lista de alumnos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Alumno'
+        '404':
+          description: No hay alumnos matriculados en esa asignatura.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+definitions:
+  Fecha:
+    type: object
+    properties:
+      dia:
+        type: integer
+      mes:
+        type: integer
+      año:
+        type: integer
+  Asignatura:
+    type: object
+    properties:
+      nombre:
+        type: string
+      codigo:
+        type: string
+      tipo:
+        type: string
+        enum:
+          - Obligatoria
+          - Transversal
+          - Optativa
+      numCreditos:
+        type: integer
+  Carrera:
+    type: object
+    properties:
+      nombre:
+        type: string
+        enum:
+          - Ingeniería informática
+          - Ingeniería de telecomunicaciones
+          - Ingeniería industrial
+      codigo:
+        type: integer
+      asignaturas:
+        items:
+          properties:
+            Asignatura:
+              $ref: '#/definitions/Asignatura'
+        type: array
+  Alumno:
+    type: object
+    properties:
+      codido:
+        type: integer
+      nombre:
+        type: string
+      apellido:
+        type: string
+      dni:
+        type: string
+      Fecha:
+        $ref: '#/definitions/Fecha'
+      direccion:
+        type: string
+      correo:
+        type: string
+      Carrera:
+        $ref: '#/definitions/Carrera'
+      asignaturas matriculadas:
+        items:
+          properties:
+            Asignatura:
+              $ref: '#/definitions/Asignatura'
+        type: array
