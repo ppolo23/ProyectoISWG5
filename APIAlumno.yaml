@@ -180,69 +180,20 @@ paths:
           description: No hay alumnos matriculados en esa asignatura.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
 definitions:
-  Fecha:
-    type: object
-    properties:
-      dia:
-        type: integer
-      mes:
-        type: integer
-      año:
-        type: integer
-  Asignatura:
-    type: object
-    properties:
-      nombre:
-        type: string
-      codigo:
-        type: string
-      tipo:
-        type: string
-        enum:
-          - Obligatoria
-          - Transversal
-          - Optativa
-      numCreditos:
-        type: integer
-  Carrera:
-    type: object
-    properties:
-      nombre:
-        type: string
-        enum:
-          - Ingeniería informática
-          - Ingeniería de telecomunicaciones
-          - Ingeniería industrial
-      codigo:
-        type: integer
-      asignaturas:
-        items:
-          properties:
-            Asignatura:
-              $ref: '#/definitions/Asignatura'
-        type: array
   Alumno:
     type: object
     properties:
-      codido:
-        type: integer
-      nombre:
-        type: string
-      apellido:
-        type: string
       dni:
         type: string
-      Fecha:
-        $ref: '#/definitions/Fecha'
+      nombre:
+        type: string
+      ape1:
+        type: string
+      ape2:
+        type: string
+      fecha:
+        type: string
       direccion:
         type: string
       correo:
         type: string
-      Carrera:
-        $ref: '#/definitions/Carrera'
-      asignaturas matriculadas:
-        items:
-          properties:
-            Asignatura:
-              $ref: '#/definitions/Asignatura'
-        type: array
