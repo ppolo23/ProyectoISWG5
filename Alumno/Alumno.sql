@@ -1,6 +1,6 @@
 /*
 Created		07/11/2017
-Modified		13/11/2017
+Modified		14/11/2017
 Project		
 Model			
 Company		
@@ -33,17 +33,17 @@ Create table "Alumno"
 Create table "Asignatura"
 (
 	"CodAsignatura" Numeric NOT NULL UNIQUE,
-	"CodCarrera" Numeric NOT NULL,
 	"nombre" Text NOT NULL,
 	"tipo" Text NOT NULL Check (tipo in ('Obligatoria','Transversal','Optativa')),
 	"creditos" Numeric NOT NULL,
- primary key ("CodAsignatura","CodCarrera")
+ primary key ("CodAsignatura")
 ) Without Oids;
 
 
 Create table "Carrera"
 (
 	"CodCarrera" Numeric NOT NULL UNIQUE,
+	"nombre" Text NOT NULL,
  primary key ("CodCarrera")
 ) Without Oids;
 
@@ -52,8 +52,11 @@ Create table "Cursa"
 (
 	"dni" Char(9) NOT NULL,
 	"CodAsignatura" Numeric NOT NULL,
-	"CodCarrera" Numeric NOT NULL,
- primary key ("dni","CodAsignatura","CodCarrera")
+	"cursoAcademico" Text NOT NULL,
+	"grupoTeoria" Text,
+	"grupoLaboratorio" Text,
+	"calificacion" Real Check (calificacion between 0 and 10),
+ primary key ("dni","CodAsignatura")
 ) Without Oids;
 
 
@@ -61,7 +64,21 @@ Create table "Matriculado"
 (
 	"dni" Char(9) NOT NULL,
 	"CodCarrera" Numeric NOT NULL,
- primary key ("dni","CodCarrera")
+	"cursoAcademico" Text NOT NULL,
+	"fechaLimite" Date NOT NULL,
+	"tipo_pago" Text NOT NULL Check (tipo_pago in ('uno','dos','tres')),
+	"pUno" Boolean NOT NULL Default false,
+	"pDos" Boolean NOT NULL Default false,
+	"pTres" Boolean NOT NULL Default false,
+ primary key ("dni","CodCarrera","cursoAcademico")
+) Without Oids;
+
+
+Create table "relacionC_A"
+(
+	"CodCarrera" Numeric NOT NULL,
+	"CodAsignatura" Numeric NOT NULL,
+ primary key ("CodCarrera","CodAsignatura")
 ) Without Oids;
 
 
@@ -79,11 +96,13 @@ Alter table "Cursa" add  foreign key ("dni") references "Alumno" ("dni") on upda
 
 Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
 
-Alter table "Cursa" add  foreign key ("CodAsignatura","CodCarrera") references "Asignatura" ("CodAsignatura","CodCarrera") on update restrict on delete restrict;
+Alter table "Cursa" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
-Alter table "Asignatura" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
+Alter table "relacionC_A" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
 Alter table "Matriculado" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
+
+Alter table "relacionC_A" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
 
 
 
