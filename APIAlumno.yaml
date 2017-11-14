@@ -8,6 +8,10 @@ basePath: /apiAlumno
 tags:
   - name: Alumnos
     description: operaciones sobre alumnos
+  - name: Asignaturas
+    description: operaciones sobre las asignaturas
+  - name: Carreras
+    description: operaciones sobre las carreras
 schemes:
   - https
 paths:
@@ -17,7 +21,7 @@ paths:
         - Alumnos
       summary: Obtiene los alumnos
       description: Obtiene un listado de alumnos del sistema.
-      operationId: obtener_alumno
+      operationId: obtener_alumnos
       produces:
         - application/xml
         - application/json
@@ -137,9 +141,9 @@ paths:
           description: La carrera de la Universidad
           type: string
           enum:
-            - Ingeniería informática
-            - Ingeniería de telecomunicaciones
-            - Ingeniería industrial
+            - Ingenieria informatica
+            - Ingenieria de telecomunicaciones
+            - Ingenieria industrial
       responses:
         '200':
           description: Una lista de alumnos
@@ -150,7 +154,7 @@ paths:
         '404':
           description: No hay alumnos matriculados en esa carrera.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
-  /alumno/asignatura:
+  /alumnos/asignatura:
     get:
       tags:
         - Alumnos
@@ -179,7 +183,133 @@ paths:
         '404':
           description: No hay alumnos matriculados en esa asignatura.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+  /asignaturas:
+    get:
+      tags:
+        - Asignaturas
+      summary: Obtiene las asignaturas
+      description: Obtiene un listado de las asignaturas de la universidad.
+      operationId: obtener_asignaturas
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tamanoPagina
+          in: query
+          description: Número de asignaturas devueltas
+          required: false
+          type: integer
+        - name: numeroPaginas
+          in: query
+          description: Número de páginas devueltas
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Una lista de asignaturas
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Asignatura'
+      x-swagger-router-controller: swagger_server.controllers.asignaturas_controller
+  '/asignaturas/{nombre}':
+    get:
+      tags:
+        - Asignaturas
+      summary: Devuelve una asignatura.
+      description: Devuelve una asignatura por su nombre.
+      operationId: get_asignatura
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: nombre
+          in: path
+          required: true
+          description: El nombre de la asignatura
+          type: string
+      responses:
+        '200':
+          description: Una Asignatura
+          schema:
+            $ref: '#/definitions/Asignatura'
+        '404':
+          description: La Asignatura no existe.
+      x-swagger-router-controller: swagger_server.controllers.asignaturas_controller
+  /carrera:
+    get:
+      tags:
+        - Carreras
+      summary: Devuelve todas las carreras
+      description: Devuelve todas las carreras de la Universidad
+      operationId: get_carreras
+      consumes:
+        - application/xml
+        - application/json
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        '200':
+          description: Las carreras de la Universidad.
+        '400':
+          description: No hay carreras dadas de alta.
+    x-swagger-router-controller: swagger_server.controllers.carreras_controller
+  '/carrera/{nombre}':
+    get:
+      tags:
+        - Carreras
+      summary: Devuelve una carrera por su nombre
+      description: Devuelve una carrera por el nombre pasado como parametro.
+      operationId: get_carrera_nombre
+      consumes:
+        - application/xml
+        - application/json
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: nombre
+          in: path
+          required: true
+          description: El nombre de la carrera
+          type: string
+      responses:
+        '200':
+          description: La carrera buscada.
+          schema:
+            $ref: '#/definitions/Carrera'
+        '400':
+          description: No hay carreras con ese nombre.
+    x-swagger-router-controller: swagger_server.controllers.carreras_controller
 definitions:
+  Carrera:
+    type: object
+    properties:
+      codigo:
+        type: integer
+      nombre:
+        type: string
+  Asignatura:
+    type: object
+    properties:
+      codigo:
+        type: integer
+      nombre:
+        type: string
+      carrera:
+        type: string
+      tipo:
+        type: string
+        enum:
+          - Transversal
+          - Optativa
+          - Obligatoria
+      creditos:
+        type: integer
   Alumno:
     type: object
     properties:
