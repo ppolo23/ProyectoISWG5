@@ -1,0 +1,197 @@
+swagger: '2.0'
+info:
+  description: >-
+    API orientada a la obtención y gestión de recursos de un determinado
+    departamento
+  version: 1.0.0
+  title: Departamento
+host: 'localhost:8080'
+basePath: /dep
+tags:
+  - name: Departamento
+    description: Operaciones sobre departamentos
+schemes:
+  - https
+paths:
+  /departamentos:
+    get:
+      tags:
+        - Departamento
+      summary: Obtiene los departamentos
+      description: Obtiene un listado de los departamentos existentes en el sistema
+      operationId: obtener_departamento
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tamagnoPagina
+          in: query
+          description: número de departamentos devueltos
+          required: false
+          type: integer
+        - name: numeroPagina
+          in: query
+          description: número de páginas devueltas
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Una lista de departamentos
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Departamento'
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  /departartamento:
+    post:
+      tags:
+        - Departamento
+      summary: Crea un departamento
+      description: Añade un departamento a la lista de departamentos
+      operationId: crear_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: departamento
+          description: El departamento que se va a añadir.
+          required: true
+          schema:
+            $ref: '#/definitions/Departamento'
+      responses:
+        '200':
+          description: Departamento creado correctamente.
+        '400':
+          description: El departamento no ha podido ser creado.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  '/departamento/{codID}':
+    get:
+      tags:
+        - Usuarios
+      summary: Devuelve un departamento
+      description: >-
+        Devuelve un único departamento identificado por su código de
+        identificación
+      operationId: departamento_codID_get
+      parameters:
+        - name: codID
+          in: path
+          description: Número de identificación del departamento
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operación correcta
+          schema:
+            $ref: '#/definitions/Departamento'
+        '404':
+          description: El departamento no existe.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+    delete:
+      tags:
+        - Departamento
+      summary: elimina un departamento
+      description: elimina un departamento de la lista
+      operationId: borrar_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codID
+          in: path
+          required: true
+          description: Código de identificación del departamento a eliminar
+          type: string
+      responses:
+        '204':
+          description: Departamento eliminado.
+        '400':
+          description: No se pudo eliminar el departamento.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  /departamento/asignaturas:
+    get:
+      tags:
+        - Departamento
+      summary: Asignaturas de un departamento
+      description: Devuelve lista con las asignaturas impartidas por el departamento
+      operationId: get_asignaturas_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codID
+          in: query
+          required: true
+          description: >-
+            Código de identificación del departamento que imparte dichas
+            asignaturas
+          type: string
+          enum:
+            - Estructuras de datos
+            - Algoritmia y complejidad
+            - Ingeniería del Software
+            - Bases de datos
+            - Redes de computadores
+      responses:
+        '200':
+          description: Una lista de asignaturas
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Departamento'
+        '404':
+          description: No hay alumnos matriculados en esa carrera.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  /Departamento/profesores:
+    get:
+      tags:
+        - Departamento
+      summary: Profesores de un departamento
+      description: >-
+        Devuelve los profesores que imparten asignaturas pertenecientes a un
+        departamento.
+      operationId: get_profesores_por_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codID
+          in: query
+          required: true
+          description: Departamento del que queremos obtener los profesores
+          type: string
+      responses:
+        '200':
+          description: Una lista de profesores
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Departamento'
+        '404':
+          description: No hay alumnos matriculados en esa asignatura.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+definitions:
+  Departamento:
+    type: object
+    properties:
+      codID:
+        type: string
+      facultad:
+        type: string
+      area:
+        type: string
+      carga_docente:
+        type: integer
