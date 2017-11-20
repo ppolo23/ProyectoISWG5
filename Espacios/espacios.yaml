@@ -1,0 +1,201 @@
+swagger: '2.0'
+info:
+  description: API para la gestion de espacios
+  version: 1.0.0
+  title: API espacios
+host: 'localhost:8080'
+basePath: /APIespacios
+tags:
+  - name: Espacios
+    description: Operaciones sobre los espacios
+schemes:
+  - https
+paths:
+  /espacios:
+    get:
+      tags:
+        - Espacios
+      summary: Obtiene espacios
+      description: Obtiene un listado de espacios del sistema.
+      operationId: obtener_espacio
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tamanoPagina
+          in: query
+          description: Número de espacios devueltos
+          required: false
+          type: integer
+        - name: numeroPaginas
+          in: query
+          description: Número de páginas devueltas
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Una lista de espacios
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Espacio'
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+  /espacio:
+    post:
+      tags:
+        - Espacios
+      summary: Crea un espacio
+      description: Añade un espacio a la lista de espacios.
+      operationId: crear_espacio
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: espacio
+          description: El espacio que se va a añadir.
+          required: true
+          schema:
+            $ref: '#/definitions/Espacio'
+      responses:
+        '200':
+          description: Espacio creado correctamente.
+        '400':
+          description: El espacio no ha podido ser creado.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+  '/espacio/{codId}':
+    get:
+      tags:
+        - Espacios
+      summary: Devuelve un espacio
+      description: Devuelve un único espacio identificado por su codId de espacio
+      operationId: espacio_codId_get
+      parameters:
+        - name: codId
+          in: path
+          description: Número de identificación del espacio
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operación correcta
+          schema:
+            $ref: '#/definitions/Espacio'
+        '404':
+          description: El espacio no existe.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+    put:
+      tags:
+        - Espacios
+      summary: Alquilar/Reservar un espacio
+      description: Alquila o reserva un único espacio identificado por su codId de espacio
+      operationId: espacio_codId_put
+      parameters:
+        - name: codId
+          in: path
+          description: Número de identificación del espacio
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Operación correcta
+          schema:
+            $ref: '#/definitions/Espacio'
+        '404':
+          description: El espacio esta alquilado o reservado.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+    delete:
+      tags:
+        - Espacios
+      summary: elimina un espacio
+      description: elimina un espacio de la lista
+      operationId: borrar_espacio
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codId
+          in: path
+          required: true
+          description: Codigo de identificación del espacio que se quiere eliminar
+          type: string
+      responses:
+        '204':
+          description: Espacio eliminado.
+        '400':
+          description: No se pudo eliminar el espacio.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+  /espacio/alquilados:
+    get:
+      tags:
+        - Espacios
+      summary: Espacios de una carrera alquilados.
+      description: Devuelve los espacios alquilados de la universidad.
+      operationId: get_espacios_alquilados
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codId
+          in: query
+          required: true
+          description: El codigo de identificacion del espacio.
+          type: string
+      responses:
+        '200':
+          description: Una lista de espacios alquilados
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Espacio'
+        '404':
+          description: Operación erronea.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+  /espacio/reservados:
+    get:
+      tags:
+        - Espacios
+      summary: Espacios de una carrera reservados.
+      description: Devuelve los espacios reservados de la universidad.
+      operationId: get_espacios_reservados
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codId
+          in: query
+          required: true
+          description: El codigo de identificacion del espacio.
+          type: string
+      responses:
+        '200':
+          description: Una lista de espacios reservados
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Espacio'
+        '404':
+          description: Operación erronea.
+      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+definitions:
+  Espacio:
+    type: object
+    properties:
+      codId:
+        type: string
+      tipo:
+        type: string
+      capacidad:
+        type: integer
