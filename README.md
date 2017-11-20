@@ -1,7 +1,7 @@
 ## ProyectoISWG5
-- *API REST* del modulo Espacios
-- *API REST* del modulo Departamento
-- *API REST* y base de datos del modulo Alumno.
+- *API REST* del modulo Gestion Espacios
+- *API REST* del modulo  GestionDepartamento
+- *API REST* y base de datos del modulo Gestion Alumno.
 
 ### Dependecias
 - Toad Data Modeler para visualizar el modelado de la base de datos Alumnos en el archivo 'baseDatosAlumno.dm2'
