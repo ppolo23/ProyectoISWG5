@@ -144,7 +144,7 @@ paths:
             items:
               $ref: '#/definitions/Profesor'
         '404':
-          description: No hay profesores matriculados en esa carrera.
+          description: No hay profesores en ese departamento.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
 definitions:
   Profesor:
@@ -164,3 +164,12 @@ definitions:
         type: string
       correo:
         type: string
+      categoria:
+        type: string
+      antiguedad:
+        type: integer
+      tramosDoc:
+        type: string
+      tramosInv:
+        type: string
+      
