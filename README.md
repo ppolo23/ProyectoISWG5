@@ -2,6 +2,7 @@
 - *API REST* del modulo Gestión Espacios
 - *API REST* del modulo  Gestión Departamento
 - *API REST* y base de datos del modulo Gestión Alumno
+- *API REST* del modulo Gestión de Profesor
 
 
 
