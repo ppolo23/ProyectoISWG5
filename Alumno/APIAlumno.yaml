@@ -74,8 +74,8 @@ paths:
     get:
       tags:
         - Alumnos
-      summary: Devuelve un alumno.
-      description: Devuelve un alumno por su dni.
+      summary: Devuelve expediente alumno.
+      description: Devuelve el expediente de alumno utilizando el dni.
       operationId: get_alumno
       consumes:
         - application/json
@@ -91,7 +91,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Un Alumno
+          description: Datos expediente alumno.
           schema:
             $ref: '#/definitions/Alumno'
         '404':
@@ -262,8 +262,8 @@ paths:
     get:
       tags:
         - Carreras
-      summary: Devuelve una carrera por su nombre
-      description: Devuelve una carrera por el nombre pasado como parametro.
+      summary: Devuelve asignaturas pertenecientes a la carrera
+      description: Devuelve asignaturas de la carrera pasada por parametro
       operationId: get_carrera_nombre
       consumes:
         - application/xml
@@ -279,7 +279,7 @@ paths:
           type: string
       responses:
         '200':
-          description: La carrera buscada.
+          description: Lista asignaturas de la carrera.
           schema:
             $ref: '#/definitions/Carrera'
         '400':
@@ -293,14 +293,20 @@ definitions:
         type: integer
       nombre:
         type: string
+      credTransversales:
+        type: integer
+      credObligatorios:
+        type: integer
+      credOptativos:
+        type: integer
+      credTotales:
+        type: integer
   Asignatura:
     type: object
     properties:
       codigo:
         type: integer
       nombre:
-        type: string
-      carrera:
         type: string
       tipo:
         type: string
@@ -309,6 +315,8 @@ definitions:
           - Optativa
           - Obligatoria
       creditos:
+        type: integer
+      curso:
         type: integer
   Alumno:
     type: object
@@ -323,7 +331,17 @@ definitions:
         type: string
       fecha:
         type: string
-      direccion:
-        type: string
       correo:
         type: string
+      grado:
+        type: string
+      asignaturas:
+        type: array
+        items:
+          $ref: '#/definitions/Alumno'
+      credObligatorios:
+        type: integer
+      credTransversales:
+        type: integer
+      credOptativos:
+        type: integer
