@@ -9,7 +9,8 @@ creditosObligatorios
 creditosTransversales
 creditosOptativos
 
-*todos los atributos son de tipo string*
+*Los atributos 'creditosObliglatorios', 'creditosTransversales', 'creditosOptativos' son de tipo integer*
+*El resto de atributos son de tipo string*
 
 Cada alumno que interactúe con la aplicación, deberá introducir los siguientes datos. Estos se almacenarán en la base de datos, para su posterior interacción con los demás módulos del sistema.
 
