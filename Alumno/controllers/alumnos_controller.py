@@ -9,7 +9,7 @@ from ..util import deserialize_date, deserialize_datetime
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Alumnos1',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
 
@@ -116,7 +116,7 @@ def get_alumno(dni):
         return lanzarError("Alumno no encontrado", 404, "Error", "about:blank")
 
     else:
-        return rows
+        return row_to_json(rows)
 
 
 def get_alumnos_por_asignatura(asignatura):
@@ -145,7 +145,7 @@ def get_alumnos_por_asignatura(asignatura):
         return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
 
     else:
-        return rows
+        return row_to_json(rows)
 
 
 def get_alumnos_por_carrera(carrera):
@@ -174,7 +174,7 @@ def get_alumnos_por_carrera(carrera):
         return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
 
     else:
-        return rows
+        return row_to_json(rows)
 
 
 def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
