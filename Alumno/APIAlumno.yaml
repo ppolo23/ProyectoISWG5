@@ -255,6 +255,10 @@ paths:
       responses:
         '200':
           description: Las carreras de la Universidad.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Carrera'
         '400':
           description: No hay carreras dadas de alta.
     x-swagger-router-controller: swagger_server.controllers.carreras_controller
@@ -264,7 +268,7 @@ paths:
         - Carreras
       summary: Devuelve asignaturas pertenecientes a la carrera
       description: Devuelve asignaturas de la carrera pasada por parametro
-      operationId: get_carrera_nombre
+      operationId: get_asignaturas_carrera
       consumes:
         - application/xml
         - application/json
@@ -281,7 +285,9 @@ paths:
         '200':
           description: Lista asignaturas de la carrera.
           schema:
-            $ref: '#/definitions/Carrera'
+            type: array
+            items:
+              $ref: '#/definitions/Asignatura'
         '400':
           description: No hay carreras con ese nombre.
     x-swagger-router-controller: swagger_server.controllers.carreras_controller
