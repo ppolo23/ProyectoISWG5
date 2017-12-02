@@ -13,6 +13,15 @@ def conectar():
 
     return conexion
 
+#Metodo para lanzar los errores
+def lanzarError(msg, status, title, typee):
+    d = {}
+    d["detail"] = msg
+    d["error"] = status
+    d["title"] = title
+    d["type"] = typee
+    return d
+
 def borrar_alumno(dni):
     """
     elimina un alumno
