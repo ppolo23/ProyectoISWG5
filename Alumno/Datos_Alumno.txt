@@ -3,9 +3,11 @@ dni (clave)
 nombre
 ape1
 ape2
-fecha
-direccion
+fechaNac
 correo
+creditosObligatorios
+creditosTransversales
+creditosOptativos
 
 *todos los atributos son de tipo string*
 
