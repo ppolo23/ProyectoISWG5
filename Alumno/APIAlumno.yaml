@@ -344,7 +344,7 @@ definitions:
       asignaturas:
         type: array
         items:
-          $ref: '#/definitions/Alumno'
+          $ref: '#/definitions/Asignatura'
       credObligatorios:
         type: integer
       credTransversales:
