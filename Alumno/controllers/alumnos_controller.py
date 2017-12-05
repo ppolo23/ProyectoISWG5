@@ -67,9 +67,7 @@ def crear_alumno(alumno):
         rows = cursor.fetchall()
 
         if len(rows) == 0:
-            consulta = 'INSERT INTO "Alumno" VALUES ( \''+ alumno.dni + '\' , \'' + alumno.nombre + '\',\'' + 
-                                                alumno.ape1 +'\' , \'' + alumno.ape2 + '\' , \''+ alumno.fecha 
-                                                + '\', \'' +alumno.correo +'\','+ 0 +', ' + 0 +','+ 0');'
+            consulta = 'INSERT INTO "Alumno" VALUES ( \''+ alumno.dni + '\' , \'' + alumno.nombre + '\',\'' +alumno.ape1 +'\' , \'' + alumno.ape2 + '\' , \''+ alumno.fecha + '\', \'' +alumno.correo +'\','+ 0 +',' + 0 +','+ 0+');'
             cursor.execute(consulta)
 
     #Despues cogemos las asignaturas de las que se ha matriculado, y por cada una se crea un registro en la tabla Curso
