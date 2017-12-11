@@ -261,7 +261,7 @@ paths:
               $ref: '#/definitions/Carrera'
         '400':
           description: No hay carreras dadas de alta.
-    x-swagger-router-controller: swagger_server.controllers.carreras_controller
+      x-swagger-router-controller: swagger_server.controllers.carreras_controller
   '/carrera/{nombre}':
     get:
       tags:
@@ -290,7 +290,7 @@ paths:
               $ref: '#/definitions/Asignatura'
         '400':
           description: No hay carreras con ese nombre.
-    x-swagger-router-controller: swagger_server.controllers.carreras_controller
+      x-swagger-router-controller: swagger_server.controllers.carreras_controller
 definitions:
   Carrera:
     type: object
