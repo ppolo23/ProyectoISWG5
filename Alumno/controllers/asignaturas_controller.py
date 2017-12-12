@@ -53,7 +53,8 @@ def get_asignatura(nombre):
 
     else:
         return rows
-    
+
+
 def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
     """
     Obtiene las asignaturas

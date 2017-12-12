@@ -52,7 +52,7 @@ def crear_alumno(alumno):
     """
     if connexion.request.is_json:
         alumno = Alumno.from_dict(connexion.request.get_json())
-    return 'Alumno {} creado'.format(alumno.nombre)
+    return 'do some magic!'
 
 
 def get_alumno(dni):
@@ -90,7 +90,7 @@ def get_alumnos_por_asignatura(asignatura):
     :param asignatura: La asignatura de la Universidad
     :type asignatura: str
 
-    :rtype: List[Alumno]
+    :rtype: List[str]
     """
     conex = conectar()
     cursor = conex.cursor()
@@ -111,6 +111,7 @@ def get_alumnos_por_asignatura(asignatura):
     else:
         return rows
 
+
 def get_alumnos_por_carrera(carrera):
     """
     Alumnos de una carrera.
@@ -118,12 +119,12 @@ def get_alumnos_por_carrera(carrera):
     :param carrera: La carrera de la Universidad
     :type carrera: str
 
-    :rtype: List[Alumno]
+    :rtype: List[str]
     """
     return 'do some magic!'
 
 
-def obtener_alumno(tamanoPagina=None, numeroPaginas=None):
+def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
     """
     Obtiene los alumnos
     Obtiene un listado de alumnos del sistema.

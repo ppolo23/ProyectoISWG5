@@ -24,16 +24,14 @@ def lanzarError(msg, status, title, typee):
     d["type"] = typee
     return d
 
-
-
 def get_asignaturas_carrera(nombre):
     """
-    Devuelve asignaturas pertenecientes a la carrera
-    Devuelve asignaturas de la carrera pasada por parametro
+    Devuelve las asignaturas de la carrera.
+    Devuelve las asignaturas de la carrera pasada por parametro.
     :param nombre: El nombre de la carrera
     :type nombre: str
 
-    :rtype: List[Asignatura]
+    :rtype: List[str]
     """
     conex=conectar()
     cursor=conex.cursor()
@@ -62,10 +60,9 @@ def get_asignaturas_carrera(nombre):
 
     else:
         return rows
-    
 
 
-def get_carreras(tamanoPagina=None, numeroPaginas=None):
+def obtener_carreras(tamanoPagina=None, numeroPaginas=None):
     """
     Devuelve todas las carreras
     Devuelve todas las carreras de la Universidad
@@ -76,7 +73,6 @@ def get_carreras(tamanoPagina=None, numeroPaginas=None):
 
     :rtype: List[Carrera]
     """
-
     conex = conectar()
     cursor = conex.cursor()
 
