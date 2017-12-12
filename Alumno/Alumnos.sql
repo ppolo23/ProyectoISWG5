@@ -94,13 +94,13 @@ Create table "Pertenece_"
 
 Alter table "Cursa" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
 
-Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
+Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update cascade on delete cascade;
 
 Alter table "Cursa" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
 Alter table "Pertenece_" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
-Alter table "Matriculado" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
+Alter table "Matriculado" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update cascade on delete cascade;
 
 Alter table "Pertenece_" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
 
