@@ -8,7 +8,6 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-
 def conectar():
 
     conexion = psycopg2.connect(
@@ -32,18 +31,17 @@ def lanzarError(msg, status, title, typee):
     d["type"] = typee
     return d
 
-
-def alquilar_espacio_put(espacio):
+def alquilar_espacio_put(alquilado):
     """
     Alquilar un espacio
-    Alquila un único espacio mediante un registro json
-    :param body: Espacio que se necesita alquilar
-    :type body: dict | bytes
+    Alquila un �nico espacio mediante un registro json
+    :param alquilado: Espacio que se necesita alquilar
+    :type alquilado: dict | bytes
 
     :rtype: None
     """
     if connexion.request.is_json:
-        espacio = Alquilado.from_dict(connexion.request.get_json())
+        alquilado = Alquilado.from_dict(connexion.request.get_json())
 	
 	
         conex = conectar()
@@ -78,13 +76,12 @@ def alquilar_espacio_put(espacio):
 def espacio_cod_id_get(codId):
     """
     Devuelve un espacio
-    Devuelve un único espacio identificado por su codId de espacio
-    :param codId: Número de identificación del espacio
+    Devuelve un �nico espacio identificado por su codId de espacio
+    :param codId: N�mero de identificaci�n del espacio
     :type codId: str
 
-    :rtype: Espacio   #un unico espacio, el primero de la lista 
+    :rtype: Espacio
     """
-	
     conex = conectar()                  #conectarse a la base de datos
     cursor = conex.cursor()             #
 
@@ -105,14 +102,14 @@ def espacio_cod_id_get(codId):
         return rows[0][0]
 
 
-def espacio_facultad_get(facultad): #Hecho! modifica apirest
+def espacio_facultad_get(facultad):
     """
     Devuelve un espacio
-    Devuelve un único espacio identificado por la facultad a la que pertenece
+    Devuelve un �nico espacio identificado por la facultad a la que pertenece
     :param facultad: facultad del espacio
     :type facultad: str
 
-    :rtype: Espacio    # un unico espacio, el primero de la lista 
+    :rtype: Espacio
     """
     conex = conectar()
     cursor = conex.cursor()
@@ -133,17 +130,16 @@ def espacio_facultad_get(facultad): #Hecho! modifica apirest
 
     else:
         return rows[0][0]
-    
 
 
-def get_espacios_ocupados(): #Modificar apirest
+def get_espacios_ocupados():
     """
     Espacios de una facultad ocupados.
     Devuelve los espacios ocupados de la facultad.
 
     :rtype: List[Espacio]
     """
-    conex = conectar()
+        conex = conectar()
     cursor = conex.cursor()
 
     cursor.execute(
@@ -164,7 +160,7 @@ def get_espacios_ocupados(): #Modificar apirest
 #    return 'do some magic!'
 
 
-def obtener_espacio(): #Hecha!
+def obtener_espacio():
     """
     Obtiene espacios
     Obtiene un listado de espacios del sistema.
@@ -192,17 +188,17 @@ def obtener_espacio(): #Hecha!
     #return 'do some magic!'
 
 
-def reserva_espacio_put(espacio):  #Hecho!  Modificar apirest
+def reserva_espacio_put(reservado):
     """
     Reservar un espacio
-    Reserva un único espacio mediante un registro json
-    :param body: Espacio que se necesita reservar
-    :type body: dict | bytes
+    Reserva un �nico espacio mediante un registro json
+    :param reservado: Espacio que se necesita reservar
+    :type reservado: dict | bytes
 
     :rtype: None
     """
     if connexion.request.is_json:
-        espacio = Reservado.from_dict(connexion.request.get_json())
+        reservado = Reservado.from_dict(connexion.request.get_json())
 
         conex = conectar()
         cursor = conex.cursor()
