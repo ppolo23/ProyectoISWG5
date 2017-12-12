@@ -49,5 +49,3 @@ Create table  RESERVADOS
 Alter table ALQUILADOS add  foreign key (cod_id) references ESPACIOS (cod_id)  on update restrict  on delete restrict ;
 Alter table RESERVADOS add  foreign key (cod_id) references ESPACIOS (cod_id)  on update restrict  on delete restrict ;
 
-
-

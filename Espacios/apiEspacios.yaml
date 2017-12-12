@@ -10,6 +10,7 @@ tags:
     description: Operaciones sobre los espacios
 schemes:
   - https
+  
 paths:
   /espacios:
     get:
@@ -29,34 +30,35 @@ paths:
             items:
               $ref: '#/definitions/Espacio'
       x-swagger-router-controller: swagger_server.controllers.espacios_controller
-  /espacio:
-  '/espacio/{codId}':
+
+  /espaciosPorId/{codId}:
     get:
       tags:
         - Espacios
       summary: Devuelve un espacio
-      description: Devuelve un 煤nico espacio identificado por su codId de espacio
+      description: Devuelve un 鷑ico espacio identificado por su codId de espacio
       operationId: espacio_codId_get
       parameters:
         - name: codId
           in: path
-          description: N煤mero de identificaci贸n del espacio
+          description: N鷐ero de identificaci髇 del espacio
           required: true
           type: string
       responses:
         '200':
-          description: Operaci贸n correcta
+          description: Operaci髇 correcta
           schema:
             $ref: '#/definitions/Espacio'
         '404':
           description: El espacio no existe.
       x-swagger-router-controller: swagger_server.controllers.espacios_controller
-    '/espacio/{facultad}':
+
+  /espaciosPorFacultad/{facultad}:
     get:
       tags:
         - Espacios
       summary: Devuelve un espacio
-      description: Devuelve un 煤nico espacio identificado por la facultad a la que pertenece
+      description: Devuelve un 鷑ico espacio identificado por la facultad a la que pertenece
       operationId: espacio_facultad_get
       parameters:
         - name: facultad
@@ -66,13 +68,14 @@ paths:
           type: string
       responses:
         '200':
-          description: Operaci贸n correcta
+          description: Operaci髇 correcta
           schema:
             $ref: '#/definitions/Espacio'
         '404':
           description: El espacio no existe.
       x-swagger-router-controller: swagger_server.controllers.espacios_controller
-  /espacio/ocupados:
+
+  /espacios/ocupados:
     get:
       tags:
         - Espacios
@@ -93,7 +96,7 @@ paths:
             items:
               $ref: '#/definitions/Espacio'
         '404':
-          description: Operaci贸n erronea.
+          description: Operaci髇 erronea.
       x-swagger-router-controller: swagger_server.controllers.espacios_controller
 
   /alquilarEspacio:
@@ -101,47 +104,42 @@ paths:
       tags:
         - Espacios
       summary: Alquilar un espacio
-      description: Alquila un 煤nico espacio mediante un registro json
+      description: Alquila un 鷑ico espacio mediante un registro json
       operationId: alquilarEspacio_put
       parameters:
-
-        - in: "body"
-        name: "body"
-        description: "Espacio que se necesita alquilar"
-        required: true
-        schema:
-          $ref: "#/definitions/Alquilado"
+        - in: body
+          name: alquilado
+          description: "Espacio que se necesita alquilar"
+          required: true
+          schema:
+            $ref: "#/definitions/Alquilado"
       responses:
         '200':
-          description: Operaci贸n correcta
-          schema:
-            $ref: '#/definitions/Alquilado'
+          description: Operaci髇 correcta
         '404':
           description: El espacio esta alquilado.
-      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+    x-swagger-router-controller: swagger_server.controllers.espacios_controller
+
   /reservaEspacio:
     put:
       tags:
         - Espacios
       summary: Reservar un espacio
-      description: Reserva un 煤nico espacio mediante un registro json
+      description: Reserva un 鷑ico espacio mediante un registro json
       operationId: reservaEspacio_put
       parameters:
-
-        - in: "body"
-        name: "body"
-        description: "Espacio que se necesita reservar"
-        required: true
-        schema:
-          $ref: "#/definitions/Reservado"
+        - in: body
+          name: reservado
+          description: "Espacio que se necesita reservar"
+          required: true
+          schema:
+            $ref: "#/definitions/Reservado"
       responses:
         '200':
-          description: Operaci贸n correcta
-          schema:
-            $ref: '#/definitions/Reservado'
+          description: Operaci髇 correcta
         '404':
           description: El espacio esta reservado.
-      x-swagger-router-controller: swagger_server.controllers.espacios_controller
+    x-swagger-router-controller: swagger_server.controllers.espacios_controller
   
 definitions:
   Espacio:
@@ -156,9 +154,9 @@ definitions:
       capacidad:
         type: integer
       precioHora:
-        type:integer
+        type: integer
       facultad:
-        type:string
+        type: string
 
   Alquilado:
     type: object
@@ -173,21 +171,22 @@ definitions:
         type: string
       horaFin:
         type: string
-   Reservado:
-    type: object
-    properties:
-      codId:
-        type: integer
-      id_grupo:
-        type: integer
-      fechaInicio:
-        type: string
-      fechaFin:
-        type: string
-      horaInicio:
-        type: string
-      horaFin:
-        type: string
-      diaSemana:
-        type: string
 
+  Reservado:
+      type: object
+      properties:
+        codId:
+          type: integer
+        id_grupo:
+          type: integer
+        fechaInicio:
+          type: string
+        fechaFin:
+          type: string
+        horaInicio:
+          type: string
+        horaFin:
+          type: string
+        diaSemana:
+          type: string
+  
