@@ -9,7 +9,7 @@ from ..util import deserialize_date, deserialize_datetime
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'Alumnos',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
 
@@ -40,8 +40,6 @@ def borrar_alumno(dni):
     conex.commit()
     conex.close()
 
-    #·return 'do some magic!'
-
 
 def crear_alumno(alumno):
     """
@@ -54,44 +52,13 @@ def crear_alumno(alumno):
     """
     if connexion.request.is_json:
         alumno = Alumno.from_dict(connexion.request.get_json())
+    return 'Alumno {} creado'.format(alumno.nombre)
 
-        conex = conectar()
-        cursor = conex.cursor()
-        #Primero insertamos los datos del alumno en la tabla Alumno si no habia estado matriculado en un año anterior
-        cursor.execute(
-        'SELECT row_to_json(dni) \
-         FROM "Alumno" \
-         WHERE dni =  \''+ dni + '\';'
-        )
-
-        rows = cursor.fetchall()
-
-        if len(rows) == 0:
-            consulta = 'INSERT INTO "Alumno" VALUES ( \''+ alumno.dni + '\' , \'' + alumno.nombre + '\',\'' +alumno.ape1 +'\' , \'' + alumno.ape2 + '\' , \''+ alumno.fecha + '\', \'' +alumno.correo +'\','+ 0 +',' + 0 +','+ 0+');'
-            cursor.execute(consulta)
-
-    #Despues cogemos las asignaturas de las que se ha matriculado, y por cada una se crea un registro en la tabla Curso
-        asignaturas[] = alumno.asignaturas
-        curso = datetime.datetime.now()
-        cAcademico1 = curso.year
-        cAcademico2 = cAcademico+1
-
-        for i in range(0,len(asignaturas)-1):
-            consulta = ' INSERT INTO "Cursa" VALUES (\''+ alumno.dni + '\' , \'' + asignaturas[i].codigo + '\',\''+str(cAcademico1)+"/"+str(cAcademico2) +'\');'
-            cursor.execute(consulta)
-
-        consulta = ' INSERT INTO "Matriculado" VALUES (\''+ alumno.dni + '\' , \'' + alumno.grado + '\',\''+str(cAcademico1)+"/"+str(cAcademico2) +'\');'
-        cursor.execute(consulta)
-
-        conex.commit()
-        conex.close()
-
-    return "Inserción del alumno {} realizada con exito".format(alumno.dni)
 
 def get_alumno(dni):
     """
-    Devuelve expediente alumno.
-    Devuelve el expediente de alumno utilizando el dni.
+    Devuelve un alumno.
+    Devuelve el expediente de un alumno por su dni.
     :param dni: El dni del alumno
     :type dni: str
 
@@ -100,11 +67,10 @@ def get_alumno(dni):
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute(
-        'SELECT row_to_json(dni) \
-         FROM "Alumno" \
-         WHERE dni =  \''+ dni + '\';'
-    )
+    #consulta1 = 'SELECT "Alumno".*, "Matriculado"."CodCarrera","Cursa"."CodAsignatura","Cursa"."cursoAcademico","Cursa".calificacion FROM "Alumno" WHERE dni =  \''+ dni + '\';'
+    consulta = 'SELECT * FROM "Alumno" WHERE dni =  \''+ dni + '\';'
+
+    cursor.execute(consulta)
 
     rows = cursor.fetchall()
 
@@ -114,7 +80,7 @@ def get_alumno(dni):
         return lanzarError("Alumno no encontrado", 404, "Error", "about:blank")
 
     else:
-        return row_to_json(rows)
+        return rows
 
 
 def get_alumnos_por_asignatura(asignatura):
@@ -130,9 +96,9 @@ def get_alumnos_por_asignatura(asignatura):
     cursor = conex.cursor()
 
     cursor.execute(
-        'SELECT row_to_json(dni) \
-         FROM "Cursa" \
-         WHERE asignatura =  \''+ asignatura +'\';'
+        'SELECT "Alumno".nombre \
+         FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
+         WHERE "Cursa"."CodAsignatura" =  \''+ asignatura +'\';'
     )
 
     rows = cursor.fetchall()
@@ -143,8 +109,7 @@ def get_alumnos_por_asignatura(asignatura):
         return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
 
     else:
-        return row_to_json(rows)
-
+        return rows
 
 def get_alumnos_por_carrera(carrera):
     """
@@ -155,27 +120,10 @@ def get_alumnos_por_carrera(carrera):
 
     :rtype: List[Alumno]
     """
-    conex = conectar()
-    cursor = conex.cursor()
-
-    cursor.execute(
-        'SELECT row_to_json(dni) \
-         FROM "Matriculado" \
-         WHERE carrera =  \''+ carrera +'\';'
-    )
-
-    rows = cursor.fetchall()
-
-    conex.close()
-
-    if len(rows) == 0:
-        return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
-
-    else:
-        return row_to_json(rows)
+    return 'do some magic!'
 
 
-def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
+def obtener_alumno(tamanoPagina=None, numeroPaginas=None):
     """
     Obtiene los alumnos
     Obtiene un listado de alumnos del sistema.
