@@ -38,7 +38,16 @@ def get_asignaturas_carrera(nombre):
     conex=conectar()
     cursor=conex.cursor()
 
-    consulta='SELECT * FROM "Carrera" WHERE nombre =  \''+ nombre + '\';'
+    carrera = ["Ingeneria informatica","Ingenieria de telecomunicaciones", "Ingenieria industrial"]
+    codigo = 0
+
+    for i in range(0,3):
+        if(nombre == carrera[i]):
+            codigo = i
+
+    consulta='SELECT "Asigantura".* \
+    FROM "Asignatura" inner join "Pertenece_" on "Asignatura"."CodAsignatura" = "Pertenece_"."CodAsignatura" \
+    WHERE "Pertenece_"."CodCarrera" =  \''+ codigo + '\';'
 
     cursor.execute(
         consulta
