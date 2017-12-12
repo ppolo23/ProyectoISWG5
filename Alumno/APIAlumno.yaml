@@ -21,7 +21,7 @@ paths:
         - Alumnos
       summary: Obtiene los alumnos
       description: Obtiene un listado de alumnos del sistema.
-      operationId: obtener_alumno
+      operationId: obtener_alumnos
       produces:
         - application/xml
         - application/json
@@ -245,7 +245,7 @@ paths:
         - Carreras
       summary: Devuelve todas las carreras
       description: Devuelve todas las carreras de la Universidad
-      operationId: get_carreras
+      operationId: obtener_carreras
       produces:
         - application/xml
         - application/json
@@ -353,14 +353,12 @@ definitions:
         type: string
       correo:
         type: string
-      grado:
-        type: string
       asignaturas:
         type: array
         items:
-          properties:
-            Asignatura:
-              $ref: '#/definitions/Asignatura'
+          type: string
+      grado:
+        type: string
       credObligatorios:
         type: integer
       credTransversales:
