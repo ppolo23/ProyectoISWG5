@@ -21,7 +21,7 @@ paths:
         - Alumnos
       summary: Obtiene los alumnos
       description: Obtiene un listado de alumnos del sistema.
-      operationId: obtener_alumnos
+      operationId: obtener_alumno
       produces:
         - application/xml
         - application/json
@@ -74,8 +74,8 @@ paths:
     get:
       tags:
         - Alumnos
-      summary: Devuelve un alumno.
-      description: Devuelve un alumno por su dni.
+      summary: Devuelve el expediente de un alumno.
+      description: Devuelve el expediente de un alumno por su dni.
       operationId: get_alumno
       consumes:
         - application/json
@@ -91,7 +91,7 @@ paths:
           type: string
       responses:
         '200':
-          description: Un Alumno
+          description: Datos expediente del alumno
           schema:
             $ref: '#/definitions/Alumno'
         '404':
@@ -141,9 +141,9 @@ paths:
           description: La carrera de la Universidad
           type: string
           enum:
-            - Ingenieria informatica
-            - Ingenieria de telecomunicaciones
-            - Ingenieria industrial
+            - Ingeniería informática
+            - Ingeniería de telecomunicaciones
+            - Ingeniería industrial
       responses:
         '200':
           description: Una lista de alumnos
@@ -154,7 +154,7 @@ paths:
         '404':
           description: No hay alumnos matriculados en esa carrera.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
-  /alumnos/asignatura:
+  /alumno/asignatura:
     get:
       tags:
         - Alumnos
@@ -239,32 +239,42 @@ paths:
         '404':
           description: La Asignatura no existe.
       x-swagger-router-controller: swagger_server.controllers.asignaturas_controller
-  /carrera:
+  /carreras:
     get:
       tags:
         - Carreras
       summary: Devuelve todas las carreras
       description: Devuelve todas las carreras de la Universidad
       operationId: get_carreras
-      consumes:
-        - application/xml
-        - application/json
       produces:
         - application/xml
         - application/json
+      parameters:
+        - name: tamanoPagina
+          in: query
+          description: Número de carreras devueltas
+          required: false
+          type: integer
+        - name: numeroPaginas
+          in: query
+          description: Número de páginas devueltas
+          required: false
+          type: integer
       responses:
         '200':
           description: Las carreras de la Universidad.
-        '400':
-          description: No hay carreras dadas de alta.
-    x-swagger-router-controller: swagger_server.controllers.carreras_controller
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Carrera'
+      x-swagger-router-controller: swagger_server.controllers.carreras_controller
   '/carrera/{nombre}':
     get:
       tags:
         - Carreras
-      summary: Devuelve una carrera por su nombre
-      description: Devuelve una carrera por el nombre pasado como parametro.
-      operationId: get_carrera_nombre
+      summary: Devuelve asignaturas pertenecientes a la carrera
+      description: Devuelve asignaturas de la carrera pasada por parametro
+      operationId: get_asignaturas_carrera
       consumes:
         - application/xml
         - application/json
@@ -279,36 +289,50 @@ paths:
           type: string
       responses:
         '200':
-          description: La carrera buscada.
+          description: Lista asignaturas de la carrera.
           schema:
-            $ref: '#/definitions/Carrera'
+            type: array
+            items:
+              $ref: '#/definitions/Asignatura'
         '400':
           description: No hay carreras con ese nombre.
-    x-swagger-router-controller: swagger_server.controllers.carreras_controller
+      x-swagger-router-controller: swagger_server.controllers.carreras_controller
 definitions:
-  Carrera:
-    type: object
-    properties:
-      codigo:
-        type: integer
-      nombre:
-        type: string
   Asignatura:
     type: object
     properties:
-      codigo:
-        type: integer
       nombre:
         type: string
-      carrera:
+      codigo:
         type: string
       tipo:
         type: string
         enum:
+          - Obligatoria
           - Transversal
           - Optativa
-          - Obligatoria
-      creditos:
+      numCreditos:
+        type: integer
+      curso:
+        type: integer
+  Carrera:
+    type: object
+    properties:
+      nombre:
+        type: string
+        enum:
+          - Ingeniería informática
+          - Ingeniería de telecomunicaciones
+          - Ingeniería industrial
+      codigo:
+        type: integer
+      credTransversales:
+        type: integer
+      credObligatorios:
+        type: integer
+      credOptativos:
+        type: integer
+      credTotales:
         type: integer
   Alumno:
     type: object
@@ -323,7 +347,19 @@ definitions:
         type: string
       fecha:
         type: string
-      direccion:
-        type: string
       correo:
         type: string
+      grado:
+        type: string
+      asignaturas:
+        type: array
+        items:
+          properties:
+            Asignatura:
+              $ref: '#/definitions/Asignatura'
+      credObligatorios:
+        type: integer
+      credTransversales:
+        type: integer
+      credOptativos:
+        type: integer
