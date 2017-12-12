@@ -74,7 +74,7 @@ paths:
     get:
       tags:
         - Alumnos
-      summary: Devuelve el expediente de un alumno.
+      summary: Devuelve un alumno.
       description: Devuelve el expediente de un alumno por su dni.
       operationId: get_alumno
       consumes:
@@ -150,7 +150,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Alumno'
+              type: string
         '404':
           description: No hay alumnos matriculados en esa carrera.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
@@ -179,7 +179,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Alumno'
+              type: string
         '404':
           description: No hay alumnos matriculados en esa asignatura.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
@@ -267,35 +267,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Carrera'
-      x-swagger-router-controller: swagger_server.controllers.carreras_controller
-  '/carrera/{nombre}':
-    get:
-      tags:
-        - Carreras
-      summary: Devuelve asignaturas pertenecientes a la carrera
-      description: Devuelve asignaturas de la carrera pasada por parametro
-      operationId: get_asignaturas_carrera
-      consumes:
-        - application/xml
-        - application/json
-      produces:
-        - application/xml
-        - application/json
-      parameters:
-        - name: nombre
-          in: path
-          required: true
-          description: El nombre de la carrera
-          type: string
-      responses:
-        '200':
-          description: Lista asignaturas de la carrera.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Asignatura'
-        '400':
-          description: No hay carreras con ese nombre.
       x-swagger-router-controller: swagger_server.controllers.carreras_controller
 definitions:
   Asignatura:
