@@ -17,7 +17,7 @@ Create table  ESPACIOS
 	cod_id Integer NOT NULL UNIQUE ,
 	nombre Text NOT NULL UNIQUE ,
 	facultad Text NOT NULL,
-	tipo Text NOT NULL Check ('tipo' in ('laboratorio','aula','salon de actos','salon de grados')) ,
+	tipo Text NOT NULL Check (tipo in ('laboratorio','aula','salon de actos','salon de grados')) ,
 	capacidad Smallint NOT NULL,
 	precioHora Integer NULL ,
  primary key (cod_id)
@@ -37,7 +37,7 @@ Create table  RESERVADOS
 (
 	cod_id Integer NOT NULL,
 	fechaInicio Date NOT NULL,
-	diaSemana Text NOT NULL Check ('diaSemana' in ('Lunes','Martes','Miercoles','Jueves','Viernes')),
+	diaSemana Text NOT NULL Check (diaSemana in ('Lunes','Martes','Miercoles','Jueves','Viernes')),
 	fechaFin Date NOT NULL,
 	horaInicio Time NOT NULL,
 	horaFin Time NOT NULL,
