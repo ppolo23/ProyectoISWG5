@@ -181,7 +181,7 @@ def obtener_espacio():
 def reserva_espacio_put(reservado):
 	"""
 	Reservar un espacio
-	Reserva un ?nico espacio mediante un registro json
+	Reserva un unico espacio mediante un registro json
 	:param reservado: Espacio que se necesita reservar
 	:type reservado: dict | bytes
 
@@ -193,23 +193,16 @@ def reserva_espacio_put(reservado):
 		conex = conectar()
 		cursor = conex.cursor()
 
-		try:
-			cursor.execute(
-			"INSERT INTO alquilados VALUES (" + str(reservado.cod_id) +
-											",\'" + str(reservado.fechaInicio) + "\'" +
-											",\'" + str(reservado.diaSemana) + "\'" +
-											",\'" + str(reservado.fechaFin) + "\'" + 
-											",\'" + str(reservado.horaInicio) + "\'" +
-											",\'" + str(reservado.horaFin) + "\'" +
+		cursor.execute(
+		"INSERT INTO reservados VALUES (" + str(reservado.cod_id) +
+											",\'" + str(reservado.fecha_inicio) + "\'" +
+											",\'" + str(reservado.dia_semana) + "\'" +
+											",\'" + str(reservado.fecha_fin) + "\'" + 
+											",\'" + str(reservado.hora_inicio) + "\'" +
+											",\'" + str(reservado.hora_fin) + "\'" +
 											"," + str(reservado.id_grupo) + ");"
-			)
-		except Exception as e:
-			return e
+		)
 
 		conex.commit()
 		conex.close()
-
-		return "Reserva correcta"
-
-	else:
-		return "Peto json"
+	return 'do some magic!'
