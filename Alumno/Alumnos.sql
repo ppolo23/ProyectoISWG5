@@ -1,6 +1,6 @@
 /*
 Created		07/11/2017
-Modified		14/11/2017
+Modified		21/11/2017
 Project		
 Model			
 Company		
@@ -74,7 +74,7 @@ Create table "Matriculado"
 ) Without Oids;
 
 
-Create table "relacionC_A"
+Create table "Pertenece_"
 (
 	"CodCarrera" Numeric NOT NULL,
 	"CodAsignatura" Numeric NOT NULL,
@@ -94,15 +94,15 @@ Create table "relacionC_A"
 
 Alter table "Cursa" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
 
-Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
+Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update cascade on delete cascade;
 
 Alter table "Cursa" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
-Alter table "relacionC_A" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
+Alter table "Pertenece_" add  foreign key ("CodAsignatura") references "Asignatura" ("CodAsignatura") on update restrict on delete restrict;
 
-Alter table "Matriculado" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
+Alter table "Matriculado" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update cascade on delete cascade;
 
-Alter table "relacionC_A" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
+Alter table "Pertenece_" add  foreign key ("CodCarrera") references "Carrera" ("CodCarrera") on update restrict on delete restrict;
 
 
 

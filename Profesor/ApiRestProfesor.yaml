@@ -1,0 +1,175 @@
+swagger: '2.0'
+info:
+  description: API para la gestión de los Profesores de la Universidad
+  version: 1.0.0
+  title: API Profesor
+host: 'localhost:8080'
+basePath: /apiProfesor
+tags:
+  - name: Profesores
+    description: operaciones sobre profesores
+schemes:
+  - https
+paths:
+  /profesores:
+    get:
+      tags:
+        - Profesores
+      summary: Obtiene los profesores
+      description: Obtiene un listado de profesores del sistema.
+      operationId: obtener_profesor
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: tamanoPagina
+          in: query
+          description: Número de profesores devueltos
+          required: false
+          type: integer
+        - name: numeroPaginas
+          in: query
+          description: Número de páginas devueltas
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Una lista de profesores
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Profesor'
+      x-swagger-router-controller: swagger_server.controllers.profesor_controller
+  /profesor:
+    post:
+      tags:
+        - Profesores
+      summary: Crea un profesor
+      description: Añade un profesor a la lista.
+      operationId: crear_profesor
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: profesor
+          description: El profesor que se va a añadir.
+          required: true
+          schema:
+            $ref: '#/definitions/Profesor'
+      responses:
+        '200':
+          description: Profesor creado correctamente.
+        '400':
+          description: El profesor no ha podido ser creado.
+      x-swagger-router-controller: swagger_server.controllers.profesor_controller
+  '/profesor/{dni}':
+    get:
+      tags:
+        - Profesores
+      summary: Devuelve un profesor.
+      description: Devuelve un profesor por su dni.
+      operationId: get_profesor
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          description: El dni del profesor
+          type: string
+      responses:
+        '200':
+          description: Un Profesor
+          schema:
+            $ref: '#/definitions/Profesor'
+        '404':
+          description: El Profesor no existe.
+      x-swagger-router-controller: swagger_server.controllers.profesor_controller
+    delete:
+      tags:
+        - Profesores
+      summary: elimina un profesor
+      description: elimina un profesor de la lista
+      operationId: borrar_profesor
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          description: dni del profesor a eliminar
+          type: string
+      responses:
+        '204':
+          description: Profesor eliminado.
+        '400':
+          description: No se pudo eliminar el profesor.
+      x-swagger-router-controller: swagger_server.controllers.profesor_controller
+  /profesor/departamento:
+    get:
+      tags:
+        - Profesores
+      summary: Profesores de un departamento.
+      description: Devuelve los profesores de un departamento.
+      operationId: get_profesores_por_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: departamento
+          in: query
+          required: true
+          description: El Departamento de la Universidad
+          type: string
+      responses:
+        '200':
+          description: Una lista de profesores
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Profesor'
+        '404':
+          description: No hay profesores en ese departamento.
+      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+definitions:
+  Profesor:
+    type: object
+    properties:
+      dni:
+        type: string
+      nombre:
+        type: string
+      ape1:
+        type: string
+      ape2:
+        type: string
+      fecha:
+        type: string
+      direccion:
+        type: string
+      correo:
+        type: string
+      categoria:
+        type: string
+      antiguedad:
+        type: integer
+      tramosDoc:
+        type: string
+      tramosInv:
+        type: string
+      

@@ -1,0 +1,17 @@
+Atributos Alumno
+dni (clave)
+nombre
+ape1
+ape2
+fechaNac
+correo
+creditosObligatorios
+creditosTransversales
+creditosOptativos
+
+*Los atributos 'creditosObliglatorios', 'creditosTransversales', 'creditosOptativos' son de tipo integer*
+*El resto de atributos son de tipo string*
+
+Cada alumno que interactúe con la aplicación, deberá introducir los siguientes datos. Estos se almacenarán en la base de datos, para su posterior interacción con los demás módulos del sistema.
+
+ 

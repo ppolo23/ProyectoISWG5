@@ -71,7 +71,7 @@ paths:
   '/departamento/{codID}':
     get:
       tags:
-        - Usuarios
+        - Departamento
       summary: Devuelve un departamento
       description: >-
         Devuelve un único departamento identificado por su código de
