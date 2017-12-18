@@ -24,7 +24,6 @@ Create table "Alumno"
 	"ape1" Text NOT NULL,
 	"ape2" Text,
 	"fecha" Date,
-	"direccion" Text,
 	"correo" Text NOT NULL,
  primary key ("dni")
 ) Without Oids;
@@ -92,7 +91,7 @@ Create table "Pertenece_"
 
 /* Create Foreign Keys */
 
-Alter table "Cursa" add  foreign key ("dni") references "Alumno" ("dni") on update restrict on delete restrict;
+Alter table "Cursa" add  foreign key ("dni") references "Alumno" ("dni") on update cascade on delete cascade;
 
 Alter table "Matriculado" add  foreign key ("dni") references "Alumno" ("dni") on update cascade on delete cascade;
 
