@@ -1,14 +1,20 @@
 ## ProyectoISWG5
-- *API REST* del modulo Gestión Espacios
-- *API REST* del modulo  Gestión Departamento
-- *API REST* y base de datos del modulo Gestión Alumno
-- *API REST* del modulo Gestión de Profesor
+
 
 
 
 ![Alt text](./modelo.png)
 
-### Dependecias
+#### Objetos:
+- *API REST* del módulo Alumno
+- Base datos Alumno/Matricula
+- *API REST* del módulo Espacio
+- Base datos Espacio
+- *API REST* del módulo Pagos
+- *API REST* del módulo Departamento
+- *API REST* del módulo Profesor
+
+### Dependencias
 - Toad Data Modeler para visualizar el modelado de la bases de datos.
 - PostgreSQL
 - Python Flask
