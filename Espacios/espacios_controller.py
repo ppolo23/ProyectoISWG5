@@ -22,7 +22,7 @@ def conectar():
 
 def lanzarError(msg, status, title, typee):
 	"""
-	Lanza un mensaje de \"error\" en forma de jSon
+	Lanza un mensaje de \"error\" en forma de json
 	"""
 	d = {}
 	d["detail"] = msg
@@ -34,7 +34,7 @@ def lanzarError(msg, status, title, typee):
 def alquilar_espacio_put(alquilado):
 	"""
 	Alquilar un espacio
-	Alquila un ?nico espacio mediante un registro json
+	Alquila un unico espacio mediante un registro json
 	:param alquilado: Espacio que se necesita alquilar
 	:type alquilado: dict | bytes
 
@@ -42,8 +42,6 @@ def alquilar_espacio_put(alquilado):
 	"""
 	if connexion.request.is_json:
 		alquilado = Alquilado.from_dict(connexion.request.get_json())
-
-		print(alquilado)
 	
 		conex = conectar()
 		cursor = conex.cursor()
@@ -66,8 +64,8 @@ def alquilar_espacio_put(alquilado):
 def espacio_cod_id_get(codId):
 	"""
 	Devuelve un espacio
-	Devuelve un ?nico espacio identificado por su codId de espacio
-	:param codId: N?mero de identificaci?n del espacio
+	Devuelve un unico espacio identificado por su codId de espacio
+	:param codId: Numero de identificacion del espacio
 	:type codId: str
 	:rtype: Espacio
 	"""
@@ -95,7 +93,7 @@ def espacio_cod_id_get(codId):
 def espacio_facultad_get(facultad):
 	"""
 	Devuelve un espacio
-	Devuelve un ?nico espacio identificado por la facultad a la que pertenece
+	Devuelve un unico espacio identificado por la facultad a la que pertenece
 	:param facultad: facultad del espacio
 	:type facultad: str
 
@@ -174,8 +172,6 @@ def obtener_espacio():
 
 	else:
 		return rows[0][0]
-	
-	#return 'do some magic!'
 
 
 def reserva_espacio_put(reservado):
@@ -194,7 +190,7 @@ def reserva_espacio_put(reservado):
 		cursor = conex.cursor()
 
 		cursor.execute(
-		"INSERT INTO reservados VALUES (" + str(reservado.cod_id) +
+			"INSERT INTO reservados VALUES (" + str(reservado.cod_id) +
 											",\'" + str(reservado.fecha_inicio) + "\'" +
 											",\'" + str(reservado.dia_semana) + "\'" +
 											",\'" + str(reservado.fecha_fin) + "\'" + 
@@ -205,4 +201,8 @@ def reserva_espacio_put(reservado):
 
 		conex.commit()
 		conex.close()
-	return 'do some magic!'
+
+		return "Reserva realizado con éxito"
+
+	else:
+		return lanzarError("Error", 404, "Error", "about:blank")
