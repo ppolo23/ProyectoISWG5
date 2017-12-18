@@ -10,10 +10,9 @@ from ..util import deserialize_date, deserialize_datetime
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Alumnos',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'AlumnosUniversidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
-
 
 #Metodo para lanzar los errores
 def lanzarError(msg, status, title, typee):
@@ -36,20 +35,20 @@ def get_asignaturas_carrera(nombre):
     conex=conectar()
     cursor=conex.cursor()
 
-    carrera = ["Ingeneria informatica","Ingenieria de telecomunicaciones", "Ingenieria industrial"]
+    carrera = ["informatica","telecomunicaciones", "industrial"]
     codigo = 0
 
     for i in range(0,3):
-        if(nombre == carrera[i]):
-            codigo = i
+        if(carrera[i] in nombre):
+            codigo = i+1
 
-    consulta='SELECT "Asigantura".* \
+    if(codigo == 0): return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
+
+    consulta='SELECT "Asignatura".nombre \
     FROM "Asignatura" inner join "Pertenece_" on "Asignatura"."CodAsignatura" = "Pertenece_"."CodAsignatura" \
-    WHERE "Pertenece_"."CodCarrera" =  \''+ codigo + '\';'
+    WHERE "Pertenece_"."CodCarrera" =  '+ str(codigo) + ';'
 
-    cursor.execute(
-        consulta
-        )
+    cursor.execute(consulta)
 
     rows = cursor.fetchall()
 

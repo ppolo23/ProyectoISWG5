@@ -6,14 +6,12 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Alumnos',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'AlumnosUniversidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
-
 
 #Metodo para lanzar los errores
 def lanzarError(msg, status, title, typee):
@@ -24,8 +22,6 @@ def lanzarError(msg, status, title, typee):
     d["type"] = typee
     return d
 
-
-
 def get_asignatura(nombre):
     """
     Devuelve una asignatura.
@@ -35,7 +31,7 @@ def get_asignatura(nombre):
 
     :rtype: Asignatura
     """
-    conex=conectar()
+    conex = conectar()
     cursor=conex.cursor()
 
     consulta='SELECT * FROM "Asignatura" WHERE nombre =  \''+ nombre + '\';'
