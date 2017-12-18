@@ -1,0 +1,185 @@
+---
+swagger: "2.0"
+info:
+  description: "API para la gestion de espacios"
+  version: "1.0.0"
+  title: "API espacios"
+host: "localhost:8080"
+basePath: "/APIespacios"
+tags:
+- name: "Espacios"
+  description: "Operaciones sobre los espacios"
+schemes:
+- "https"
+paths:
+  /espacios:
+    get:
+      tags:
+      - "Espacios"
+      summary: "Obtiene espacios"
+      description: "Obtiene un listado de espacios del sistema."
+      operationId: "obtener_espacio"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Una lista de espacios"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Espacio"
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /espaciosPorId/{codId}:
+    get:
+      tags:
+      - "Espacios"
+      summary: "Devuelve un espacio"
+      description: "Devuelve un ?nico espacio identificado por su codId de espacio"
+      operationId: "espacio_cod_id_get"
+      parameters:
+      - name: "codId"
+        in: "path"
+        description: "N?mero de identificaci?n del espacio"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operaci?n correcta"
+          schema:
+            $ref: "#/definitions/Espacio"
+        404:
+          description: "El espacio no existe."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /espaciosPorFacultad/{facultad}:
+    get:
+      tags:
+      - "Espacios"
+      summary: "Devuelve un espacio"
+      description: "Devuelve un ?nico espacio identificado por la facultad a la que\
+        \ pertenece"
+      operationId: "espacio_facultad_get"
+      parameters:
+      - name: "facultad"
+        in: "path"
+        description: "facultad del espacio"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Operaci?n correcta"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Espacio"
+        404:
+          description: "El espacio no existe."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /espacios/ocupados:
+    get:
+      tags:
+      - "Espacios"
+      summary: "Espacios de una facultad ocupados."
+      description: "Devuelve los espacios ocupados de la facultad."
+      operationId: "get_espacios_ocupados"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Una lista de espacios ocupados"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Espacio"
+        404:
+          description: "Operaci?n erronea."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /alquilarEspacio:
+    put:
+      tags:
+      - "Espacios"
+      summary: "Alquilar un espacio"
+      description: "Alquila un ?nico espacio mediante un registro json"
+      operationId: "alquilar_espacio_put"
+      parameters:
+      - in: "body"
+        name: "alquilado"
+        description: "Espacio que se necesita alquilar"
+        required: true
+        schema:
+          $ref: "#/definitions/Alquilado"
+      responses:
+        200:
+          description: "Operacion correcta"
+        404:
+          description: "El espacio esta alquilado."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /reservaEspacio:
+    put:
+      tags:
+      - "Espacios"
+      summary: "Reservar un espacio"
+      description: "Reserva un unico espacio mediante un registro json"
+      operationId: "reserva_espacio_put"
+      parameters:
+      - in: "body"
+        name: "reservado"
+        description: "Espacio que se necesita reservar"
+        required: true
+        schema:
+          $ref: "#/definitions/Reservado"
+      responses:
+        200:
+          description: "Operacion correcta"
+        404:
+          description: "El espacio esta reservado."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+definitions:
+  Espacio:
+    type: "object"
+    properties:
+      codId:
+        type: "integer"
+      nombre:
+        type: "string"
+      tipo:
+        type: "string"
+      capacidad:
+        type: "integer"
+      precioHora:
+        type: "integer"
+      facultad:
+        type: "string"
+  Alquilado:
+    type: "object"
+    properties:
+      codId:
+        type: "integer"
+      id_prof:
+        type: "integer"
+      fecha:
+        type: "string"
+      horaInicio:
+        type: "string"
+      horaFin:
+        type: "string"
+  Reservado:
+    type: "object"
+    properties:
+      codId:
+        type: "integer"
+      id_grupo:
+        type: "integer"
+      fechaInicio:
+        type: "string"
+      fechaFin:
+        type: "string"
+      horaInicio:
+        type: "string"
+      horaFin:
+        type: "string"
+      diaSemana:
+        type: "string"
