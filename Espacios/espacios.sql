@@ -1,18 +1,4 @@
-﻿/*
-Created		02/12/2017
-Modified		02/12/2017
-Project		
-Model		
-Company		
-Author		
-Version		
-Database		PostgreSQL 7 
-*/
-
-
-
-
-Create table  ESPACIOS
+﻿Create table ESPACIOS
 (
 	cod_id Integer NOT NULL UNIQUE ,
 	nombre Text NOT NULL UNIQUE ,
@@ -23,7 +9,7 @@ Create table  ESPACIOS
  primary key (cod_id)
 );
 
-Create table  ALQUILADOS
+Create table ALQUILADOS
 (
 	cod_id Integer NOT NULL,
 	fecha Date NOT NULL,
@@ -33,7 +19,7 @@ Create table  ALQUILADOS
  primary key (cod_id,fecha,horaInicio)
 );
 
-Create table  RESERVADOS
+Create table RESERVADOS
 (
 	cod_id Integer NOT NULL,
 	fechaInicio Date NOT NULL,
@@ -48,4 +34,3 @@ Create table  RESERVADOS
 
 Alter table ALQUILADOS add  foreign key (cod_id) references ESPACIOS (cod_id)  on update restrict  on delete restrict ;
 Alter table RESERVADOS add  foreign key (cod_id) references ESPACIOS (cod_id)  on update restrict  on delete restrict ;
-
