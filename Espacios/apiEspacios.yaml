@@ -35,17 +35,17 @@ paths:
       tags:
       - "Espacios"
       summary: "Devuelve un espacio"
-      description: "Devuelve un ?nico espacio identificado por su codId de espacio"
+      description: "Devuelve un unico espacio identificado por su codId de espacio"
       operationId: "espacio_cod_id_get"
       parameters:
       - name: "codId"
         in: "path"
-        description: "N?mero de identificaci?n del espacio"
+        description: "Numero de identificacion del espacio"
         required: true
         type: "string"
       responses:
         200:
-          description: "Operaci?n correcta"
+          description: "Operacion correcta"
           schema:
             $ref: "#/definitions/Espacio"
         404:
@@ -56,7 +56,7 @@ paths:
       tags:
       - "Espacios"
       summary: "Devuelve un espacio"
-      description: "Devuelve un ?nico espacio identificado por la facultad a la que\
+      description: "Devuelve un unico espacio identificado por la facultad a la que\
         \ pertenece"
       operationId: "espacio_facultad_get"
       parameters:
@@ -67,7 +67,7 @@ paths:
         type: "string"
       responses:
         200:
-          description: "Operaci?n correcta"
+          description: "Operacion correcta"
           schema:
             type: "array"
             items:
@@ -95,14 +95,14 @@ paths:
             items:
               $ref: "#/definitions/Espacio"
         404:
-          description: "Operaci?n erronea."
+          description: "Operacion erronea."
       x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
   /alquilarEspacio:
     put:
       tags:
       - "Espacios"
       summary: "Alquilar un espacio"
-      description: "Alquila un ?nico espacio mediante un registro json"
+      description: "Alquila un unico espacio mediante un registro json"
       operationId: "alquilar_espacio_put"
       parameters:
       - in: "body"
