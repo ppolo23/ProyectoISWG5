@@ -22,7 +22,7 @@
 - Cualquier editor de texto valdrá para visualizar el contenido de las APIs
 
 #### Instalar:
-1. Crear una base de datos en PostgreSQL con el esquema el del archivo `Alumnos.sql`
+1. Crear una base de datos en PostgreSQL con el esquema el del archivo `Alumnos.sql` y con el nombre AlumnosUniversidad
 2. Generación del servidor flask correspondiente al microservico Alumno mediante API Alumno especificada en fichero `APIAlumno.yaml`
 3. Sustitución de los archivos generados automáticamente en la carpeta controllers por los ficheros `alumnos_controller.py`, `asignaturas_controller.py`, `carreras_controller.py`
 
