@@ -97,6 +97,28 @@ paths:
         404:
           description: "Operacion erronea."
       x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
+  /espacios/libres:
+    get:
+      tags:
+      - "Espacios"
+      summary: "Espacios de una facultad libres"
+      description: "Devuelve los espacios ocupados de la facultad."
+      operationId: "get_espacios_libres"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Una lista de espacios ocupados"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Espacio"
+        404:
+          description: "Operacion erronea."
+      x-swagger-router-controller: "swagger_server.controllers.espacios_controller"
   /alquilarEspacio:
     put:
       tags:
