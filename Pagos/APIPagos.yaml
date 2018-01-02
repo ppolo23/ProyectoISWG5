@@ -1,32 +1,37 @@
 swagger: '2.0'
+
 info:
   description: API para la consulta de pagos
   version: 1.0.0
   title: API Pagos
+
 host: 'localhost:8080'
+
 basePath: /apiPagos
+
 tags:
-  - name: Alumnos
+  - name: Alumno
     description: operaciones sobre alumnos
   - name: Profesor
     description: operaciones sobre los profesores
   - name: Espacio
     description: operaciones sobre los espacios
+
 schemes:
   - https
+
 paths:
+
   '/alumno/{dni}':
     get:
       tags:
-        - Alumnos
+        - Alumno
       summary: Consulta el pago del alumno
       description: Nos indica si el alumno ha pagado
       operationId: pago_alumno
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: dni
@@ -43,7 +48,29 @@ paths:
               $ref: '#/definitions/Alumno'
         '404':
           description: Error en consulta
-      x-swagger-router-controller: swagger_server.controllers.alumnos_controller
+      x-swagger-router-controller: swagger_server.controllers.alumno_controller
+
+  '/insertarCobroMatricula':
+    put:
+      tags:
+      - Alumno
+      summary: Insertar registro de cobro de matricula
+      description: Inserta registro de cobro de matricula
+      operationId: insertar_cobro_matricula
+      parameters:
+      - in: body
+        name: reservado
+        description: Espacio que se necesita reservar
+        required: true
+        schema:
+          $ref: '#/definitions/Alumno'
+      responses:
+        200:
+          description: Operacion correcta
+        404:
+          description: Error
+      x-swagger-router-controller: swagger_server.controllers.alumno_controller
+
   '/profesor/{dni}':
     get:
       tags:
@@ -52,7 +79,6 @@ paths:
       description: Indica si el profesor ha cobrado su nomina
       operationId: cobro_nomina
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: dni
@@ -70,6 +96,28 @@ paths:
         '404':
           description: Error en consulta
       x-swagger-router-controller: swagger_server.controllers.profesor_controller
+
+  '/insertarNominaProfesor':
+    put:
+      tags:
+      - Profesor
+      summary: Insertar registro de nomina profesor
+      description: Insertar registro de nomina profesor
+      operationId: insertar_nomina_profesor
+      parameters:
+      - in: body
+        name: reservado
+        description: Nomina que ha sido cobrada
+        required: true
+        schema:
+          $ref: '#/definitions/Profesor'
+      responses:
+        200:
+          description: Operacion correcta
+        404:
+          description: Error
+      x-swagger-router-controller: swagger_server.controllers.profesor_controller
+
   '/espacio/{id_espacio}':
     get:
       tags:
@@ -79,9 +127,7 @@ paths:
       operationId: pago_espacio
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: id_espacio
@@ -97,19 +143,62 @@ paths:
         '404':
           description: Error en cosulta
       x-swagger-router-controller: swagger_server.controllers.espacio_controller
+
+  '/insertarCobroEspacio':
+    put:
+      tags:
+      - Espacio
+      summary: Insertar registro de cobro de espacio
+      description: Insertar registro de cobro de espacio
+      operationId: insertar_cobro_espacio
+      parameters:
+      - in: body
+        name: reservado
+        description: Nomina que ha sido cobrada
+        required: true
+        schema:
+          $ref: '#/definitions/Espacio'
+      responses:
+        200:
+          description: Operacion correcta
+        404:
+          description: Error
+      x-swagger-router-controller: swagger_server.controllers.espacio_controller
+
 definitions:
+
   Profesor:
     type: object
     properties:
       dni:
         type: string
+      cantidad:
+        type: number
+      fecha:
+        type: string
+
   Espacio:
     type: object
     properties:
-      id_espacio:
+      cod_id:
         type: integer
+      fecha:
+        type: string
+      hora:
+        type: string
+      id_prof:
+        type: integer
+      cantidad:
+        type: number
+
   Alumno:
     type: object
     properties:
       dni:
         type: string
+      fecha_limite:
+        type: string
+      tramo:
+        type: string
+      pagado:
+        type: boolean
