@@ -46,6 +46,17 @@ class TestEspaciosController(BaseTestCase):
                                     method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_get_espacios_libres(self):
+        """
+        Test case for get_espacios_libres
+
+        Espacios de una facultad libres
+        """
+        response = self.client.open('/APIespacios/espacios/libres',
+                                    method='GET',
+                                    content_type='application/json')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
     def test_get_espacios_ocupados(self):
         """
         Test case for get_espacios_ocupados
