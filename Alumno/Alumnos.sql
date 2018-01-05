@@ -45,6 +45,8 @@ Create table "Carrera"
 (
 	"CodCarrera" Numeric NOT NULL UNIQUE,
 	"nombre" Text NOT NULL,
+	"creditosTotales" Numeric NOT NULL,
+	"creditosOptativos" Numeric NOT NULL
  primary key ("CodCarrera")
 ) Without Oids;
 
