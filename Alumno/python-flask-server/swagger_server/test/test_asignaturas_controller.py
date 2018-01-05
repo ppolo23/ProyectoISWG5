@@ -11,11 +11,11 @@ from flask import json
 class TestAsignaturasController(BaseTestCase):
     """ AsignaturasController integration test stubs """
 
-    def test_get_asignatura(self):
+    def test_get_datos_asignatura(self):
         """
-        Test case for get_asignatura
+        Test case for get_datos_asignatura
 
-        Devuelve una asignatura.
+        Devuelve los datos de una asignatura.
         """
         response = self.client.open('/apiAlumno/asignaturas/{nombre}'.format(nombre='nombre_example'),
                                     method='GET',
@@ -26,7 +26,7 @@ class TestAsignaturasController(BaseTestCase):
         """
         Test case for obtener_asignaturas
 
-        Obtiene las asignaturas
+        Obtiene todas las asignaturas
         """
         query_string = [('tamanoPagina', 56),
                         ('numeroPaginas', 56)]

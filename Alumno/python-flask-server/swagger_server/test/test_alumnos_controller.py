@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 from swagger_server.models.alumno import Alumno
+from swagger_server.models.matricula import Matricula
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
@@ -19,19 +20,6 @@ class TestAlumnosController(BaseTestCase):
         """
         response = self.client.open('/apiAlumno/alumno/{dni}'.format(dni='dni_example'),
                                     method='DELETE',
-                                    content_type='application/json')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
-
-    def test_crear_alumno(self):
-        """
-        Test case for crear_alumno
-
-        Crea un alumno
-        """
-        alumno = Alumno()
-        response = self.client.open('/apiAlumno/alumno',
-                                    method='POST',
-                                    data=json.dumps(alumno),
                                     content_type='application/json')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
@@ -72,6 +60,19 @@ class TestAlumnosController(BaseTestCase):
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_matricula(self):
+        """
+        Test case for matricula
+
+        Matriculacion del alumno
+        """
+        matricula = Matricula()
+        response = self.client.open('/apiAlumno/matricula',
+                                    method='POST',
+                                    data=json.dumps(matricula),
+                                    content_type='application/json')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
     def test_obtener_alumnos(self):
         """
         Test case for obtener_alumnos
@@ -83,6 +84,19 @@ class TestAlumnosController(BaseTestCase):
         response = self.client.open('/apiAlumno/alumnos',
                                     method='GET',
                                     query_string=query_string)
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+    def test_reserva(self):
+        """
+        Test case for reserva
+
+        Reserva la matricula de un alumno
+        """
+        alumno = Alumno()
+        response = self.client.open('/apiAlumno/reserva',
+                                    method='POST',
+                                    data=json.dumps(alumno),
+                                    content_type='application/json')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
 

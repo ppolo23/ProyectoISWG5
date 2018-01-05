@@ -42,59 +42,6 @@ def borrar_alumno(dni):
     return 'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)
 
 
-def crear_alumno(alumno):
-    """
-    Crea un alumno
-    Añade un alumno a la lista.
-    :param alumno: El alumno que se va a añadir.
-    :type alumno: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        alumno = Alumno.from_dict(connexion.request.get_json())
-
-        conex = conectar()
-        cursor = conex.cursor()
-
-        #Insertar el registro en la tabla Alumno
-        cursor.execute("INSERT INTO \"Alumno\" VALUES ("
-                    + "'" + str(alumno.dni)+ "',"
-                    + "'" + str(alumno.nombre) + "',"
-                    + "'" + str(alumno.ape1)+ "',"
-                    + "'" + str(alumno.ape2)+ "',"
-                    + "'" + str(alumno.fecha)+ "',"
-                    + "'" + str(alumno.correo)+ "');")
-        
-
-        #Insertar en la tabla Cursa (contiene las asignaturas que va a cursar)
-        #Por cada asignatura creamos un registro con dni, codigo de la asignatura y curso academico actual
-
-        cursoAcademico = str(datetime.now().year)+"/"+ str(datetime.now().year +1 )
-        print(cursoAcademico)
-        listaAsignaturas = {'Software':1,'Programacion':2,'Algoritmia':3,'Antenas':4,'Calculo':5}
-
-        for i in range(len(alumno.asignaturas)):
-            cursor.execute("INSERT INTO \"Cursa\" VALUES("
-                            + "'" + str(alumno.dni)+ "',"
-                            + str(listaAsignaturas[alumno.asignaturas[i]]) + ","
-                            + "'" + str(cursoAcademico) + "');")
-        
-        
-        #Creamos el registro correspondiente en la tabla Matriculado
-        listaCarreras = {"Ingenieria informatica":1,"Ingenieria de telecomunicaciones":2,"Ingenieria industrial":3}
-        cursor.execute("INSERT INTO \"Matriculado\"(dni,\"CodCarrera\",\"cursoAcademico\",\"fechaLimite\",tipo_pago) VALUES("
-                            + "'" + str(alumno.dni)+ "',"
-                            + str(listaCarreras[alumno.grado])+ ","
-                            + "'" + str(cursoAcademico)+ "',"
-                            + " '31/01/2017' ,"
-                            + "'uno');")
-        conex.commit()
-
-        conex.close()
-        return 'Alumno {} matriculado en la Universidad'.format(alumno.nombre)
-
-
 def get_alumno(dni):
     """
     Devuelve un alumno.
@@ -191,6 +138,20 @@ def get_alumnos_por_carrera(carrera):
         return rows
 
 
+def matricula(matricula):
+    """
+    Matriculacion del alumno
+    Matriculacion del alumno en las asignaturas indicadas
+    :param matricula: Los datos de la matricula.
+    :type matricula: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        matricula = Matricula.from_dict(connexion.request.get_json())
+    return 'do some magic!'
+
+
 def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
     """
     Obtiene los alumnos
@@ -219,3 +180,17 @@ def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
 
     else:
         return rows
+
+
+def reserva(alumno):
+    """
+    Reserva la matricula de un alumno
+    Se efectua la reserva de la matricula de un alumno
+    :param alumno: el alumno que reserva
+    :type alumno: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        alumno = Alumno.from_dict(connexion.request.get_json())
+    return 'do some magic!'
