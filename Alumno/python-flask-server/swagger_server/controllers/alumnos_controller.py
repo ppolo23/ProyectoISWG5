@@ -55,7 +55,9 @@ def get_alumno(dni):
     cursor = conex.cursor()
 
     #consulta1 = 'SELECT "Alumno".*, "Matriculado"."CodCarrera","Cursa"."CodAsignatura","Cursa"."cursoAcademico","Cursa".calificacion FROM "Alumno" WHERE dni =  \''+ dni + '\';'
-    consulta = 'SELECT * FROM "Alumno" WHERE dni =  \''+ dni + '\';'
+    consulta = 'SELECT "Alumno".*, "Cursa".* \
+    FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
+    WHERE dni =  \''+ dni + '\';'
 
     cursor.execute(consulta)
 
