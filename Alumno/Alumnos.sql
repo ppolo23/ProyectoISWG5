@@ -53,6 +53,7 @@ Create table "Cursa"
 (
 	"dni" Char(9) NOT NULL,
 	"CodAsignatura" Numeric NOT NULL,
+	"nombreAsignatura" Text NOT NULL,
 	"cursoAcademico" Text NOT NULL,
 	"grupoTeoria" Text,
 	"grupoLaboratorio" Text,
