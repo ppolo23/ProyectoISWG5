@@ -55,8 +55,6 @@ Create table "Cursa"
 	"CodAsignatura" Numeric NOT NULL,
 	"nombreAsignatura" Text NOT NULL,
 	"cursoAcademico" Text NOT NULL,
-	"grupoTeoria" Text,
-	"grupoLaboratorio" Text,
 	"calificacion" Real Check (calificacion between 0 and 10),
  primary key ("dni","CodAsignatura")
 ) Without Oids;
