@@ -26,6 +26,6 @@
 2. Una vez instalados tanto Python Flask como psycog2, ejecutar el siguiente comando en la consola del sistema en la carpeta python-flask-server y ejecutar los comandos 'pip install -r requirements.txt' y 'py -m swagger_server', en ese orden.
 3. Tras ejecutar el ultimo comando, el servidor estará activo. Ir a 'http://localhost:8080/apiAlumno/ui/' para visualizar las operaciones sobre alumnos disponibles.
 
-4. Crear una base de datos en PostgreSQL con el esquema el del archivo `Espacios.sql`
-5.Generación del servidor flask correspondiente al microservico Espacios mediante API Espacio especificada en fichero `APIEspacio.yaml`
-6. Sustitución de los archivos generados automáticamente en la carpeta controllers por el fichero `espacios_controller.py`
+4. Crear una base de datos en PostgreSQL con el esquema el del archivo `Espacios.sql` 
+5. Abrir una consola del sistema en la ruta de la carpeta del python-flask-server correspondiente a Espacios y ejecutar de nuevo los comandos mencionados en el apartado 2.
+6. Una vez el servidor esté activo, ir a 'http://localhost:8080/APIespacios/ui/' para visualizar las operaciones sobre espacios disponibles.
