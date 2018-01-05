@@ -1,4 +1,4 @@
-/*
+﻿/*
 Created		07/11/2017
 Modified		21/11/2017
 Project		
@@ -23,8 +23,9 @@ Create table "Alumno"
 	"nombre" Text NOT NULL,
 	"ape1" Text NOT NULL,
 	"ape2" Text,
-	"fecha" Date,
+	"fecha" Date NOT NULL,
 	"correo" Text NOT NULL,
+	"id" char(9) NOT NULL,
  primary key ("dni")
 ) Without Oids;
 
@@ -35,6 +36,7 @@ Create table "Asignatura"
 	"nombre" Text NOT NULL,
 	"tipo" Text NOT NULL Check (tipo in ('Obligatoria','Transversal','Optativa')),
 	"creditos" Numeric NOT NULL,
+	
  primary key ("CodAsignatura")
 ) Without Oids;
 
