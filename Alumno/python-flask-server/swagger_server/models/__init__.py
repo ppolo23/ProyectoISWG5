@@ -5,3 +5,4 @@ from __future__ import absolute_import
 from .alumno import Alumno
 from .asignatura import Asignatura
 from .carrera import Carrera
+from .matricula import Matricula

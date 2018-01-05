@@ -2,7 +2,7 @@
 swagger: "2.0"
 info:
   description: "API para la gestión de los alumnos de la Universidad"
-  version: "1.0.0"
+  version: "1.1.0"
   title: "API Alumno"
 host: "localhost:8080"
 basePath: "/apiAlumno"
@@ -45,13 +45,13 @@ paths:
             items:
               $ref: "#/definitions/Alumno"
       x-swagger-router-controller: "swagger_server.controllers.alumnos_controller"
-  /alumno:
+  /reserva:
     post:
       tags:
       - "Alumnos"
-      summary: "Crea un alumno"
-      description: "Añade un alumno a la lista."
-      operationId: "crear_alumno"
+      summary: "Reserva la matricula de un alumno"
+      description: "Se efectua la reserva de la matricula de un alumno"
+      operationId: "reserva"
       consumes:
       - "application/json"
       - "application/xml"
@@ -61,15 +61,41 @@ paths:
       parameters:
       - in: "body"
         name: "alumno"
-        description: "El alumno que se va a añadir."
+        description: "el alumno que reserva"
         required: true
         schema:
           $ref: "#/definitions/Alumno"
       responses:
         200:
-          description: "Alumno creado correctamente."
+          description: "Reserva efectuada correctamente"
         400:
-          description: "El alumno no ha podido ser creado."
+          description: "No se ha podido reserva la matricula"
+      x-swagger-router-controller: "swagger_server.controllers.alumnos_controller"
+  /matricula:
+    post:
+      tags:
+      - "Alumnos"
+      summary: "Matriculacion del alumno"
+      description: "Matriculacion del alumno en las asignaturas indicadas"
+      operationId: "matricula"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "matricula"
+        description: "Los datos de la matricula."
+        required: true
+        schema:
+          $ref: "#/definitions/Matricula"
+      responses:
+        200:
+          description: "Matricula reservada correctamente."
+        400:
+          description: "No se ha podido realizar la reserva."
       x-swagger-router-controller: "swagger_server.controllers.alumnos_controller"
   /alumno/{dni}:
     get:
@@ -188,7 +214,7 @@ paths:
     get:
       tags:
       - "Asignaturas"
-      summary: "Obtiene las asignaturas"
+      summary: "Obtiene todas las asignaturas"
       description: "Obtiene un listado de las asignaturas de la universidad."
       operationId: "obtener_asignaturas"
       produces:
@@ -217,9 +243,9 @@ paths:
     get:
       tags:
       - "Asignaturas"
-      summary: "Devuelve una asignatura."
-      description: "Devuelve una asignatura por su nombre."
-      operationId: "get_asignatura"
+      summary: "Devuelve los datos de una asignatura."
+      description: "Devuelve los datos de una asignatura por su nombre."
+      operationId: "get_datos_asignatura"
       consumes:
       - "application/json"
       - "application/xml"
@@ -354,15 +380,14 @@ definitions:
         type: "string"
       correo:
         type: "string"
+      grado:
+        type: "string"
+  Matricula:
+    type: "object"
+    properties:
+      idAlumno:
+        type: "integer"
       asignaturas:
         type: "array"
         items:
           type: "string"
-      grado:
-        type: "string"
-      credObligatorios:
-        type: "integer"
-      credTransversales:
-        type: "integer"
-      credOptativos:
-        type: "integer"

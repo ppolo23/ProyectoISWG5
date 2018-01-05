@@ -22,10 +22,10 @@ def lanzarError(msg, status, title, typee):
     d["type"] = typee
     return d
 
-def get_asignatura(nombre):
+def get_datos_asignatura(nombre):
     """
-    Devuelve una asignatura.
-    Devuelve una asignatura por su nombre.
+    Devuelve los datos de una asignatura.
+    Devuelve los datos de una asignatura por su nombre.
     :param nombre: El nombre de la asignatura
     :type nombre: str
 
@@ -53,7 +53,7 @@ def get_asignatura(nombre):
 
 def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
     """
-    Obtiene las asignaturas
+    Obtiene todas las asignaturas
     Obtiene un listado de las asignaturas de la universidad.
     :param tamanoPagina: Número de asignaturas devueltas
     :type tamanoPagina: int
@@ -79,3 +79,4 @@ def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
 
     else:
         return rows
+
