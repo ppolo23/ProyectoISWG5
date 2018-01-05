@@ -119,7 +119,9 @@ paths:
         '200':
           description: Datos expediente del alumno
           schema:
-            $ref: '#/definitions/Alumno'
+            type: array
+            items:
+              type: string
         '404':
           description: El Alumno no existe.
       x-swagger-router-controller: swagger_server.controllers.alumnos_controller
