@@ -4,7 +4,6 @@ DROP TABLE "CobrosEspacios" Restrict;
 DROP TABLE "NominasProfesores" Restrict;
 DROP TABLE "CobrosMatriculas" Restrict;
 
-
 CREATE TYPE tramos AS ENUM ('1','2','3');
 
 CREATE TABLE "CobrosMatriculas"
@@ -13,6 +12,7 @@ CREATE TABLE "CobrosMatriculas"
 	"fecha_limite" Date NOT NULL,
 	"tramo" tramos NOT NULL,
 	"pagado" Boolean NOT NULL,
+	"correo" text NOT NULL,
  PRIMARY KEY ("DNI")
 ) Without Oids;
 
