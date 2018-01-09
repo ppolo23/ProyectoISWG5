@@ -120,7 +120,9 @@ paths:
         200:
           description: "Datos expediente del alumno"
           schema:
-            $ref: "#/definitions/Alumno"
+            type: "array"
+            items:
+              type: "string"
         404:
           description: "El Alumno no existe."
       x-swagger-router-controller: "swagger_server.controllers.alumnos_controller"
@@ -345,7 +347,12 @@ definitions:
       numCreditos:
         type: "integer"
       curso:
-        type: "integer"
+        type: "string"
+        enum:
+        - "1º"
+        - "2º"
+        - "3º"
+        - "4º"
   Carrera:
     type: "object"
     properties:
@@ -390,4 +397,10 @@ definitions:
       asignaturas:
         type: "array"
         items:
-          type: "string"
+          type: "integer"
+      plazo:
+        type: "string"
+        enum:
+        - "uno"
+        - "dos"
+        - "tres"

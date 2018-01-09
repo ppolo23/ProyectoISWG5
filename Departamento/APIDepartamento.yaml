@@ -42,7 +42,7 @@ paths:
             items:
               $ref: '#/definitions/Departamento'
       x-swagger-router-controller: swagger_server.controllers.departamentos_controller
-  /departartamento:
+  /departamento:
     post:
       tags:
         - Departamento
@@ -67,6 +67,32 @@ paths:
           description: Departamento creado correctamente.
         '400':
           description: El departamento no ha podido ser creado.
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  /Alumno/asignarGrupo:
+    post:
+      tags:
+        - Departamento
+      summary: Asigna grupo al alumno
+      description: Recibe datos alumno y le asigna un grupo de una asignatura determinada
+      operationId: recibir_alumno
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - in: body
+          name: Alumno
+          description: Datos del alumno y asignatura a matricular
+          required: true
+          schema:
+            $ref: '#/definitions/Alumno'
+      responses:
+        '200':
+          description: Añadido al grupo correctamente
+        '400':
+          description: No se puede añadir el alumno al grupo
       x-swagger-router-controller: swagger_server.controllers.departamentos_controller
   '/departamento/{codID}':
     get:
@@ -152,46 +178,32 @@ paths:
         '404':
           description: No hay alumnos matriculados en esa carrera.
       x-swagger-router-controller: swagger_server.controllers.departamentos_controller
-  /Departamento/profesores:
-    get:
-      tags:
-        - Departamento
-      summary: Profesores de un departamento
-      description: >-
-        Devuelve los profesores que imparten asignaturas pertenecientes a un
-        departamento.
-      operationId: get_profesores_por_departamento
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/xml
-        - application/json
-      parameters:
-        - name: codID
-          in: query
-          required: true
-          description: Departamento del que queremos obtener los profesores
-          type: string
-      responses:
-        '200':
-          description: Una lista de profesores
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Departamento'
-        '404':
-          description: No hay alumnos matriculados en esa asignatura.
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
 definitions:
   Departamento:
     type: object
     properties:
       codID:
         type: string
-      facultad:
+      nombre:
         type: string
-      area:
+      facultad:
         type: string
       carga_docente:
         type: integer
+      horas_impartidas:
+        type: integer
+      asignaturas:
+        type: array
+        items:
+          type: string
+  Alumno:
+    type: object
+    properties:
+      dni:
+        type: string
+      nombre:
+        type: string
+      id_asignatura:
+        type: integer
+      nombreAsignatura:
+        type: string

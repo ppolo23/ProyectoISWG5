@@ -9,7 +9,7 @@ from ..util import deserialize_date, deserialize_datetime
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'AlumnosUniversidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
 
@@ -24,8 +24,8 @@ def lanzarError(msg, status, title, typee):
 
 def get_datos_asignatura(nombre):
     """
-    Devuelve los datos de una asignatura.
-    Devuelve los datos de una asignatura por su nombre.
+    Devuelve una asignatura.
+    Devuelve una asignatura por su nombre.
     :param nombre: El nombre de la asignatura
     :type nombre: str
 
@@ -53,7 +53,7 @@ def get_datos_asignatura(nombre):
 
 def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
     """
-    Obtiene todas las asignaturas
+    Obtiene las asignaturas
     Obtiene un listado de las asignaturas de la universidad.
     :param tamanoPagina: Número de asignaturas devueltas
     :type tamanoPagina: int
@@ -79,4 +79,3 @@ def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
 
     else:
         return rows
-
