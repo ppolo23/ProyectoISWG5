@@ -1,6 +1,7 @@
 import connexion
 import psycopg2
 from swagger_server.models.alumno import Alumno
+from swagger_server.models.matricula import Matricula
 from datetime import date, datetime
 from typing import List, Dict
 from six import iteritems
@@ -9,7 +10,7 @@ from ..util import deserialize_date, deserialize_datetime
 #Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'AlumnosUniversidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
 
     return conexion
 
@@ -41,60 +42,7 @@ def borrar_alumno(dni):
     conex.close()
     return 'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)
 
-
-def crear_alumno(alumno):
-    """
-    Crea un alumno
-    Añade un alumno a la lista.
-    :param alumno: El alumno que se va a añadir.
-    :type alumno: dict | bytes
-
-    :rtype: None
-    """
-    if connexion.request.is_json:
-        alumno = Alumno.from_dict(connexion.request.get_json())
-
-        conex = conectar()
-        cursor = conex.cursor()
-
-        #Insertar el registro en la tabla Alumno
-        cursor.execute("INSERT INTO \"Alumno\" VALUES ("
-                    + "'" + str(alumno.dni)+ "',"
-                    + "'" + str(alumno.nombre) + "',"
-                    + "'" + str(alumno.ape1)+ "',"
-                    + "'" + str(alumno.ape2)+ "',"
-                    + "'" + str(alumno.fecha)+ "',"
-                    + "'" + str(alumno.correo)+ "');")
-        
-
-        #Insertar en la tabla Cursa (contiene las asignaturas que va a cursar)
-        #Por cada asignatura creamos un registro con dni, codigo de la asignatura y curso academico actual
-
-        cursoAcademico = str(datetime.now().year)+"/"+ str(datetime.now().year +1 )
-        print(cursoAcademico)
-        listaAsignaturas = {'Software':1,'Programacion':2,'Algoritmia':3,'Antenas':4,'Calculo':5}
-
-        for i in range(len(alumno.asignaturas)):
-            cursor.execute("INSERT INTO \"Cursa\" VALUES("
-                            + "'" + str(alumno.dni)+ "',"
-                            + str(listaAsignaturas[alumno.asignaturas[i]]) + ","
-                            + "'" + str(cursoAcademico) + "');")
-        
-        
-        #Creamos el registro correspondiente en la tabla Matriculado
-        listaCarreras = {"Ingenieria informatica":1,"Ingenieria de telecomunicaciones":2,"Ingenieria industrial":3}
-        cursor.execute("INSERT INTO \"Matriculado\"(dni,\"CodCarrera\",\"cursoAcademico\",\"fechaLimite\",tipo_pago) VALUES("
-                            + "'" + str(alumno.dni)+ "',"
-                            + str(listaCarreras[alumno.grado])+ ","
-                            + "'" + str(cursoAcademico)+ "',"
-                            + " '31/01/2017' ,"
-                            + "'uno');")
-        conex.commit()
-
-        conex.close()
-        return 'Alumno {} matriculado en la Universidad'.format(alumno.nombre)
-
-
+#Se crean tantos registros como asignaturas tenga el alumno (ARREGLARLO)
 def get_alumno(dni):
     """
     Devuelve un alumno.
@@ -107,8 +55,9 @@ def get_alumno(dni):
     conex = conectar()
     cursor = conex.cursor()
 
-    #consulta1 = 'SELECT "Alumno".*, "Matriculado"."CodCarrera","Cursa"."CodAsignatura","Cursa"."cursoAcademico","Cursa".calificacion FROM "Alumno" WHERE dni =  \''+ dni + '\';'
-    consulta = 'SELECT * FROM "Alumno" WHERE dni =  \''+ dni + '\';'
+    consulta = 'SELECT "Alumno".*, "Cursa".* \
+    FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
+    WHERE "Alumno".dni =  \''+ dni + '\';'
 
     cursor.execute(consulta)
 
@@ -151,7 +100,6 @@ def get_alumnos_por_asignatura(asignatura):
     else:
         return rows
 
-
 def get_alumnos_por_carrera(carrera):
     """
     Alumnos de una carrera.
@@ -165,10 +113,10 @@ def get_alumnos_por_carrera(carrera):
     cursor = conex.cursor()
 
 
-    carreras = ["informatica","telecomunicaciones", "industrial"]
+    carreras = ["informatica","industrial"]
     codigo = 0
 
-    for i in range(0,3):
+    for i in range(0,2):
         if(carreras[i] in carrera):
             codigo = i+1
 
@@ -189,6 +137,68 @@ def get_alumnos_por_carrera(carrera):
 
     else:
         return rows
+
+
+
+def matricula(matricula):
+    """
+    Matriculacion del alumno
+    Matriculacion del alumno en las asignaturas indicadas
+    :param matricula: Los datos de la matricula.
+    :type matricula: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        matricula = Matricula.from_dict(connexion.request.get_json())
+
+        cursoAcademico = str(datetime.now().year)+"/"+ str(datetime.now().year +1 )
+        credCurso = 60
+            
+        conex = conectar()
+        cursor = conex.cursor()
+
+        #Sacamos los creditos optativos que tiene la carrera
+        cursor.execute('Select "creditosOptativos" from "Carrera" where "nombre" = (select grado from "Alumno" where id = \'' + str(matricula.id_alumno) + '\');')
+        credOptativos = cursor.fetchall()
+
+        credCurso = credCurso + (0.10 * int(credOptativos[0][0]))
+
+        creds = 0
+        #Calculamos el numero de creditos de los que se quiere matricular el alumno
+        for i in range(0,len(matricula.asignaturas)):
+            cursor.execute('Select creditos from "Asignatura" where "CodAsignatura" ='+ str(matricula.asignaturas[i]) +';')
+            credAsig = cursor.fetchall()
+            creds+= int(credAsig[0][0])
+        #Si el numero de creditos es mayor que el 10% de los creditos optativos del plan de estudios no se puede
+        if(creds>credCurso):
+            return 'No se puede matricular de tantas asignaturas'
+
+
+        #Comprobamos si el alumno ha realizado la reserva
+        cursor.execute('Select * from "Alumno" where id =\'' + str(matricula.id_alumno)+'\';')
+        alumno = cursor.fetchall()
+        if(alumno[0] == None):
+            return 'No ha efecutado la reserva de la matricula'
+        
+        asignaturasUni = ["Software","Programacion","Algoritmia"]
+        #Insertamos un registro por cada asignatura en Cursa
+        for i in range(0,len(matricula.asignaturas)):
+            consulta = ' INSERT INTO "Cursa" VALUES (\''+ str(alumno[0][0]) + '\' , \'' + str(matricula.asignaturas[i]) + '\' , \'' + str(asignaturasUni[matricula.asignaturas[i]-1]) +  '\',\''+str(cursoAcademico)+'\');'
+            cursor.execute(consulta)
+
+        #Creamos el registro correspondiente en la tabla Matriculado
+        listaCarreras = {"Ingenieria informatica":1,"Ingenieria de telecomunicaciones":2,"Ingenieria industrial":3}
+        cursor.execute("INSERT INTO \"Matriculado\"(dni,\"CodCarrera\",\"cursoAcademico\",\"fechaLimite\",tipo_pago) VALUES("
+                            + "'" + str(alumno[0][0])+ "',"
+                            + str(listaCarreras[alumno[0][6]])+ ","
+                            + "'" + str(cursoAcademico) + "',"
+                            + " '31/01/2018' ,"
+                            + "'"+ matricula.plazo + "');")
+
+        conex.commit()
+
+        return 'Matricula efectuada {}'.format(matricula.id_alumno)
 
 
 def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
@@ -219,3 +229,49 @@ def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
 
     else:
         return rows
+
+
+def reserva(alumno):
+    """
+    Reserva la matricula de un alumno
+    Se efectua la reserva de la matricula de un alumno
+    :param alumno: el alumno que reserva
+    :type alumno: dict | bytes
+
+    :rtype: None
+    """
+    if connexion.request.is_json:
+        alumno = Alumno.from_dict(connexion.request.get_json())
+
+        conex = conectar()
+        cursor = conex.cursor()
+
+        #Si el alumno ya se encuentra matriculado o ha efectuado la reserva
+        cursor.execute('SELECT * FROM "Alumno" WHERE dni = \''+str(alumno.dni) +'\';')
+        id = cursor.fetchall()
+        if(len(id) != 0):
+           return 'El alumno ya se encuentra matriculado'
+
+
+        #Añadir a tabla columna grado, establecer en swagger enum de grado
+
+        #Insertar el registro en la tabla Alumno
+        cursor.execute("INSERT INTO \"Alumno\" VALUES ("
+                    + "'" + str(alumno.dni)+ "',"
+                    + "'" + str(alumno.nombre) + "',"
+                    + "'" + str(alumno.ape1)+ "',"
+                    + "'" + str(alumno.ape2)+ "',"
+                    + "'" + str(alumno.fecha)+ "',"
+                    + "'" + str(alumno.correo)+ "',"
+                    + "'" + str(alumno.grado)+ "');")
+
+        conex.commit()
+
+        #Obtenemos el codigo de identificacion que se le ha asignado
+        cursor.execute('SELECT id FROM "Alumno" where dni = \''+ str(alumno.dni)+'\';')
+
+        codigo = cursor.fetchall()
+
+        conex.close()
+
+    return 'Reserva realizada. Codigo de identificación: {}'.format(codigo[0][0])
