@@ -1,4 +1,4 @@
-﻿/*
+/*
 Created		07/11/2017
 Modified		21/11/2017
 Project		
@@ -23,10 +23,8 @@ Create table "Alumno"
 	"nombre" Text NOT NULL,
 	"ape1" Text NOT NULL,
 	"ape2" Text,
-	"fecha" Date NOT NULL,
+	"fecha" Date,
 	"correo" Text NOT NULL,
-	"id" serial,
-	"grado" Text NOT NULL,
  primary key ("dni")
 ) Without Oids;
 
@@ -37,7 +35,6 @@ Create table "Asignatura"
 	"nombre" Text NOT NULL,
 	"tipo" Text NOT NULL Check (tipo in ('Obligatoria','Transversal','Optativa')),
 	"creditos" Numeric NOT NULL,
-	
  primary key ("CodAsignatura")
 ) Without Oids;
 
@@ -46,8 +43,6 @@ Create table "Carrera"
 (
 	"CodCarrera" Numeric NOT NULL UNIQUE,
 	"nombre" Text NOT NULL,
-	"creditosTotales" Numeric NOT NULL,
-	"creditosOptativos" Numeric NOT NULL
  primary key ("CodCarrera")
 ) Without Oids;
 
@@ -56,8 +51,9 @@ Create table "Cursa"
 (
 	"dni" Char(9) NOT NULL,
 	"CodAsignatura" Numeric NOT NULL,
-	"nombreAsignatura" Text NOT NULL,
 	"cursoAcademico" Text NOT NULL,
+	"grupoTeoria" Text,
+	"grupoLaboratorio" Text,
 	"calificacion" Real Check (calificacion between 0 and 10),
  primary key ("dni","CodAsignatura")
 ) Without Oids;

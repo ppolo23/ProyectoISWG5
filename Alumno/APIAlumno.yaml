@@ -346,7 +346,7 @@ definitions:
       numCreditos:
         type: integer
       curso:
-        type: integer
+        type: string
         enum:
           - 1º
           - 2º
@@ -396,4 +396,10 @@ definitions:
       asignaturas:
         type: array
         items:
-          type: string
+          type: integer
+      plazo:
+        type: string
+        enum:
+          - uno
+          - dos
+          - tres
