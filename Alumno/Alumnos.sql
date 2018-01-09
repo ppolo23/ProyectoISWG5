@@ -25,7 +25,7 @@ Create table "Alumno"
 	"ape2" Text,
 	"fecha" Date NOT NULL,
 	"correo" Text NOT NULL,
-	"id" char(9) NOT NULL,
+	"id" serial,
  primary key ("dni")
 ) Without Oids;
 
