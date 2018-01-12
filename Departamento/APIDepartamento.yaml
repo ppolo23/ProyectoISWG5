@@ -174,7 +174,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Departamento'
+              $ref: '#/definitions/Asignatura'
         '404':
           description: No hay alumnos matriculados en esa carrera.
       x-swagger-router-controller: swagger_server.controllers.departamento_controller
@@ -206,4 +206,14 @@ definitions:
       id_asignatura:
         type: integer
       nombreAsignatura:
+        type: string
+        
+  Asignatura:
+    type: object
+    properties:
+      id_asignatura:
+        type: integer
+      id_departamento:
+        type: integer
+      nombre:
         type: string
