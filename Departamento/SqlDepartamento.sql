@@ -1,10 +1,4 @@
 ﻿
-Drop table "Pertenece" Restrict;
-Drop table "Alumno" Restrict;
-Drop table "Grupo" Restrict;
-Drop table "Asignatura" Restrict;
-Drop table "Departamento" Restrict;
-
 CREATE TYPE turnoG AS ENUM ('mañana', 'tarde');
 CREATE TYPE tipoG AS ENUM ('teoria','laboratorio');
 
