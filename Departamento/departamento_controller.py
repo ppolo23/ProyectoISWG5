@@ -1,11 +1,36 @@
 import connexion
+import psycopg2
 from swagger_server.models.alumno import Alumno
+from swagger_server.models.asignatura import Asignatura
 from swagger_server.models.departamento import Departamento
 from datetime import date, datetime
 from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
+
+def conectar():
+
+    conexion = psycopg2.connect(
+        database = "espacios",
+        user = "postgres",
+        password = "postgres",
+        host = "127.0.0.1",
+        port = "5432"
+    )
+
+    return conexion
+
+def lanzarError(msg, status, title, typee):
+    """
+    Lanza un mensaje de \"error\" en forma de json
+    """
+    d = {}
+    d["detail"] = msg
+    d["error"] = status
+    d["title"] = title
+    d["type"] = typee
+    return d
 
 def borrar_departamento(codID):
     """
@@ -16,7 +41,21 @@ def borrar_departamento(codID):
 
     :rtype: None
     """
-    return 'do some magic!'
+    conex = conectar()
+    cursor = conex.cursor()
+
+    cursor.execute(
+        "DELETE \
+         FROM Departamento \
+         WHERE id_departamento = " + str(codID) + ";"
+    )
+
+    rows = cursor.fetchall()
+
+    conex.commit()
+    conex.close()
+
+    return 'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)
 
 
 def crear_departamento(departamento):
@@ -59,7 +98,24 @@ def departamento_cod_id_get(codID):
 
     :rtype: Departamento
     """
-    return 'do some magic!'
+    conex = conectar()
+    cursor = conex.cursor()
+
+    cursor.execute(
+        "SELECT row_to_json(Departamento) \
+         FROM Departamento \
+         WHERE id_departamento = " + str(codID) + ";"
+    )
+
+    rows = cursor.fetchall()
+
+    conex.close()
+
+    if len(rows) == 0:
+        return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
+
+    else:
+        return rows[0][0]
 
 
 def get_asignaturas_departamento(codID):
@@ -69,9 +125,27 @@ def get_asignaturas_departamento(codID):
     :param codID: Código de identificación del departamento que imparte dichas asignaturas
     :type codID: str
 
-    :rtype: List[Departamento]
+    :rtype: List[Asignatura]
     """
-    return 'do some magic!'
+    conex = conectar()
+    cursor = conex.cursor()
+
+    cursor.execute(
+        "SELECT array_to_json(array_agg(row_to_json(t))) \
+         FROM (SELECT row_to_json(Asignatura.nombre) \
+         FROM Departamento, Asignatura \
+         WHERE Asignatura.id_departamento = " + str(codID) + "AND Asignatura.id_departamento = Departamento.id_departamento) as t;"
+    )
+
+    rows = cursor.fetchall()
+
+    conex.close()
+
+    if len(rows) == 0:
+        return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
+
+    else:
+        return rows[0][0]
 
 
 def obtener_departamento(tamagnoPagina=None, numeroPagina=None):
@@ -85,7 +159,24 @@ def obtener_departamento(tamagnoPagina=None, numeroPagina=None):
 
     :rtype: List[Departamento]
     """
-    return 'do some magic!'
+    conex = conectar()
+    cursor = conex.cursor()
+
+    cursor.execute(
+        'SELECT  id_departamento, nombre, "horasImpartidas"\
+         FROM "Departamento" ;'
+    )
+
+    rows = cursor.fetchall()
+
+    conex.close()
+
+    if len(rows) == 0:
+        return lanzarError("No hay departamentos", 404, "Error", "about:blank")
+
+    else:
+        return rows
+
 
 
 def recibir_alumno(alumno):
