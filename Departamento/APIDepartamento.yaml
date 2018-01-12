@@ -23,6 +23,17 @@ paths:
       produces:
         - application/xml
         - application/json
+      parameters:
+        - name: tamagnoPagina
+          in: query
+          description: número de departamentos devueltos
+          required: false
+          type: integer
+        - name: numeroPagina
+          in: query
+          description: número de páginas devueltas
+          required: false
+          type: integer
       responses:
         '200':
           description: Una lista de departamentos
@@ -30,7 +41,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Departamento'
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
   /departamento:
     post:
       tags:
@@ -56,7 +67,7 @@ paths:
           description: Departamento creado correctamente.
         '400':
           description: El departamento no ha podido ser creado.
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
   /Alumno/asignarGrupo:
     post:
       tags:
@@ -72,7 +83,7 @@ paths:
         - application/json
       parameters:
         - in: body
-          name: Alumno
+          name: alumno
           description: Datos del alumno y asignatura a matricular
           required: true
           schema:
@@ -82,7 +93,7 @@ paths:
           description: Añadido al grupo correctamente
         '400':
           description: No se puede añadir el alumno al grupo
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
   '/departamento/{codID}':
     get:
       tags:
@@ -105,7 +116,7 @@ paths:
             $ref: '#/definitions/Departamento'
         '404':
           description: El departamento no existe.
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
     delete:
       tags:
         - Departamento
@@ -129,7 +140,7 @@ paths:
           description: Departamento eliminado.
         '400':
           description: No se pudo eliminar el departamento.
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
   /departamento/asignaturas:
     get:
       tags:
@@ -165,33 +176,8 @@ paths:
             items:
               $ref: '#/definitions/Departamento'
         '404':
-          description: Asignaturas no disponibles
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
-  /departamento/carga_docente:
-    get:
-      tags:
-        - Departamento
-      summary: Carga docente de un departamento
-      description: Calcula la carga docente de un departamento
-      operationId: get_cargaDocente_departamento
-      consumes:
-        - application/json
-        - application/xml
-      produces:
-        - application/xml
-        - application/json
-      parameters:
-        - name: codID
-          in: query
-          required: true
-          description: Código de identificación del departamento
-          type: string
-      responses:
-        '200':
-          description: Carga docente calculada correctamente
-        '404':
-          description: Error
-      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+          description: No hay alumnos matriculados en esa carrera.
+      x-swagger-router-controller: swagger_server.controllers.departamento_controller
 definitions:
   Departamento:
     type: object
