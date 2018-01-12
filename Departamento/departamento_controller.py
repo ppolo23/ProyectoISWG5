@@ -41,21 +41,26 @@ def borrar_departamento(codID):
 
     :rtype: None
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        "DELETE \
-         FROM Departamento \
-         WHERE id_departamento = " + str(codID) + ";"
-    )
+        cursor.execute(
+            "DELETE \
+            FROM Departamento \
+            WHERE id_departamento = " + str(codID) + ";"
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
 
-    conex.commit()
-    conex.close()
+        conex.commit()
+        conex.close()
 
-    return 'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)
+        return {'status':'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)}
+
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def crear_departamento(departamento):
@@ -70,23 +75,33 @@ def crear_departamento(departamento):
     if connexion.request.is_json:
         departamento = Departamento.from_dict(connexion.request.get_json())
 
-        conex = conectar()
-        cursor = conex.cursor()
+        try:
+            conex = conectar()
+            cursor = conex.cursor()
 
-        cursor.execute("INSERT INTO \"Departamento\" VALUES ("
-                    + "'" + str(departamento.id_departamento)+ "',"
-                    + "'" + str(departamento.nombre) + "',"
-                    + "'" + str(departamento.horasImpartidas)"');")
-        
-        
-        asignaturasUni=["Software","Programacion","Algoritmia"]
-        for i in range(0,len(asignaturasUni)):
-        	consulta = ' INSERT INTO "Asignatura" VALUES (\'' + str(asignaturasUni[i]) + '\' ;'
-            cursor.execute(consulta)
+            cursor.execute(
+                "INSERT INTO \"Departamento\" VALUES ("
+                + "'" + str(departamento.id_departamento)+ "',"
+                + "'" + str(departamento.nombre) + "',"
+                + "'" + str(departamento.horasImpartidas) + "');"
+            )
 
-         conex.commit()
+            asignaturasUni = ["Software", "Programacion", "Algoritmia"]
 
-    return 'Departamento creado.'
+            for i in range(0,len(asignaturasUni)):
+                consulta = 'INSERT INTO "Asignatura" VALUES (\'' + str(asignaturasUni[i]) + '\' ;'
+                cursor.execute(consulta)
+
+            conex.commit()
+
+            return {'status':'Departamento creado'}
+
+        except Exception as e:
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
+
+    else:
+        return lanzarError("Error", 404, "Error", "about:blank")
 
 
 def departamento_cod_id_get(codID):
@@ -98,24 +113,28 @@ def departamento_cod_id_get(codID):
 
     :rtype: Departamento
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        "SELECT row_to_json(Departamento) \
-         FROM Departamento \
-         WHERE id_departamento = " + str(codID) + ";"
-    )
+        cursor.execute(
+            "SELECT row_to_json(Departamento) \
+             FROM Departamento \
+             WHERE id_departamento = " + str(codID) + ";"
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
 
-    if len(rows) == 0:
-        return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
+        else:
+            return rows[0][0]
 
-    else:
-        return rows[0][0]
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def get_asignaturas_departamento(codID):
@@ -127,28 +146,32 @@ def get_asignaturas_departamento(codID):
 
     :rtype: List[Asignatura]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        "SELECT array_to_json(array_agg(row_to_json(t))) \
-         FROM (SELECT row_to_json(Asignatura.nombre) \
-         FROM Departamento, Asignatura \
-         WHERE Asignatura.id_departamento = " + str(codID) + "AND Asignatura.id_departamento = Departamento.id_departamento) as t;"
-    )
+        cursor.execute(
+            "SELECT array_to_json(array_agg(row_to_json(t))) \
+             FROM (SELECT row_to_json(Asignatura.nombre) \
+                  FROM Departamento, Asignatura \
+                  WHERE Asignatura.id_departamento = " + str(codID) + "AND Asignatura.id_departamento = Departamento.id_departamento) as t;"
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
 
-    if len(rows) == 0:
-        return lanzarError("Departamento no encontrado", 404, "Error", "about:blank")
+        else:
+            return rows[0][0]
 
-    else:
-        return rows[0][0]
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
-def obtener_departamento(tamagnoPagina=None, numeroPagina=None):
+def obtener_departamento():
     """
     Obtiene los departamentos
     Obtiene un listado de los departamentos existentes en el sistema
@@ -159,23 +182,26 @@ def obtener_departamento(tamagnoPagina=None, numeroPagina=None):
 
     :rtype: List[Departamento]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        'SELECT  id_departamento, nombre, "horasImpartidas"\
-         FROM "Departamento" ;'
-    )
+        cursor.execute(
+            'SELECT id_departamento, nombre, "horasImpartidas"\
+             FROM "Departamento" ;'
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("No hay departamentos", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    if len(rows) == 0:
-        return lanzarError("No hay departamentos", 404, "Error", "about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 
