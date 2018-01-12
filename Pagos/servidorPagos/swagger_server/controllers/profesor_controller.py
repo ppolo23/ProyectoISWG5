@@ -16,6 +16,17 @@ def conectar():
     )
     return conexion
 
+def lanzarError(msg, status, title, typee):
+    """
+    Lanza un mensaje de "error" en forma de json
+    """
+    d = {}
+    d["detail"] = msg
+    d["error"] = status
+    d["title"] = title
+    d["type"] = typee
+    return d
+
 def cobro_nomina(dni):
     """
     Consulta pago nomina
@@ -25,7 +36,30 @@ def cobro_nomina(dni):
 
     :rtype: str
     """
-    return 'do some magic!'
+
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
+
+        cursor.execute(
+            "SELECT row_to_json(\"NominasProfesores\") \
+             FROM \"NominasProfesores\" \
+             WHERE \"DNI\" = '" + str(dni) + "';"
+        )
+
+        filas = cursor.fetchall()
+
+        conex.close()
+
+        if len(filas) == 0:
+            return lanzarError("No existe la nomina profesor", 404, "Error", "about:blank")
+        else:
+            return filas[0]
+
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def insertar_nomina_profesor(reservado):
@@ -40,16 +74,25 @@ def insertar_nomina_profesor(reservado):
     if connexion.request.is_json:
         reservado = Profesor.from_dict(connexion.request.get_json())
 
-        conex = conectar()
-        cursor = conex.cursor()
+        try:
+            conex = conectar()
+            cursor = conex.cursor()
 
-        cursor.execute(
-        "INSERT INTO \"NominasProfesores\" VALUES (\'" + str(reservado.dni) + "\'" +
-                                                   "," + str(reservado.cantidad) +
-                                                 ",\'" + str(reservado.fecha) + "\'" + ");"
-        )
+            cursor.execute(
+                "INSERT INTO \"NominasProfesores\" VALUES (\'" + str(reservado.dni) + "\'" +
+                            "," + str(reservado.cantidad) +
+                            ",\'" + str(reservado.fecha) + "\'" + ");"
+            )
 
-        conex.commit()
-        conex.close()
+            conex.commit()
+            conex.close()
 
-        return 'Nomina profesor registrada'
+        except Exception as e:
+            conex.close()
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
+
+        return {'status':'Nomina profesor registrada'}
+
+    else:
+        lanzarError("json no válido", 404, "Error", "about:blank")
