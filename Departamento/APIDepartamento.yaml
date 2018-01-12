@@ -23,17 +23,6 @@ paths:
       produces:
         - application/xml
         - application/json
-      parameters:
-        - name: tamagnoPagina
-          in: query
-          description: número de departamentos devueltos
-          required: false
-          type: integer
-        - name: numeroPagina
-          in: query
-          description: número de páginas devueltas
-          required: false
-          type: integer
       responses:
         '200':
           description: Una lista de departamentos
@@ -176,7 +165,32 @@ paths:
             items:
               $ref: '#/definitions/Departamento'
         '404':
-          description: No hay alumnos matriculados en esa carrera.
+          description: Asignaturas no disponibles
+      x-swagger-router-controller: swagger_server.controllers.departamentos_controller
+  /departamento/carga_docente:
+    get:
+      tags:
+        - Departamento
+      summary: Carga docente de un departamento
+      description: Calcula la carga docente de un departamento
+      operationId: get_cargaDocente_departamento
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: codID
+          in: query
+          required: true
+          description: Código de identificación del departamento
+          type: string
+      responses:
+        '200':
+          description: Carga docente calculada correctamente
+        '404':
+          description: Error
       x-swagger-router-controller: swagger_server.controllers.departamentos_controller
 definitions:
   Departamento:
