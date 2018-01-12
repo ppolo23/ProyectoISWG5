@@ -16,6 +16,17 @@ def conectar():
     )
     return conexion
 
+def lanzarError(msg, status, title, typee):
+    """
+    Lanza un mensaje de "error" en forma de json
+    """
+    d = {}
+    d["detail"] = msg
+    d["error"] = status
+    d["title"] = title
+    d["type"] = typee
+    return d
+
 def insertar_cobro_espacio(reservado):
     """
     Insertar registro de cobro de espacio
@@ -28,21 +39,30 @@ def insertar_cobro_espacio(reservado):
     if connexion.request.is_json:
         reservado = Espacio.from_dict(connexion.request.get_json())
 
-        conex = conectar()
-        cursor = conex.cursor()
+        try:
+            conex = conectar()
+            cursor = conex.cursor()
 
-        cursor.execute(
-        "INSERT INTO \"CobrosEspacios\" VALUES (" + str(reservado.cod_id) +
-                                        ",\'" + str(reservado.fecha) + "\'" +
-                                        ",\'" + str(reservado.hora) + "\'" +
-                                        "," + str(reservado.id_prof) +
-                                        "," + str(reservado.cantidad) + ");"
-        )
+            cursor.execute(
+                "INSERT INTO \"CobrosEspacios\" VALUES (" + str(reservado.cod_id) +
+                            ",\'" + str(reservado.fecha) + "\'" +
+                            ",\'" + str(reservado.hora) + "\'" +
+                            "," + str(reservado.id_prof) +
+                            "," + str(reservado.cantidad) + ");"
+            )
 
-        conex.commit()
-        conex.close()
+            conex.commit()
+            conex.close()
 
-        return 'Cobro espacio correcto'
+            return {'status':'Cobro espacio correcto'}
+
+        except Exception as e:
+            conex.close()
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
+
+    else:
+        lanzarError("json no válido", 404, "Error", "about:blank")
 
 
 def pago_espacio(id_espacio):
@@ -54,4 +74,27 @@ def pago_espacio(id_espacio):
 
     :rtype: Espacio
     """
-    return 'do some magic!'
+
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
+
+        cursor.execute(
+            "SELECT row_to_json(\"CobrosEspacios\") \
+             FROM \"CobrosEspacios\" \
+             WHERE cod_id = " + str(id_espacio) + ";"
+        )
+
+        filas = cursor.fetchall()
+
+        conex.close()
+
+        if len(filas) == 0:
+            return lanzarError("No existe el espacio", 404, "Error", "about:blank")
+        else:
+            return filas[0]
+
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
