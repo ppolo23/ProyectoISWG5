@@ -190,4 +190,79 @@ def recibir_alumno(alumno):
     """
     if connexion.request.is_json:
         alumno = Alumno.from_dict(connexion.request.get_json())
+
+        conex = conectar()
+        cursor = conex.cursor()
+
+        #Insertamos los datos del alumno en la tabla Alumno
+        cursor.execute('Insert into "Alumno" values(\''+str(alumno.dni)+'\' , \''+str(alumno.nombre)+ '\');')
+
+        #Insertar datos en tabla Grupo: primero ver el grupo que le corresponde y despues insertar los datos
+
+        #Para comprobar la cantidad de alumnos de esa asignatura
+        consulta1 = 'Select "totalAlumnos" from "Grupo" where id_asignatura ='+str(alumno.id_asignatura)+';'
+        
+        #Para ver a que departamento pertenece la asignatura
+        consulta2 = 'Select id_departamento from "Asignatura" where id_asignatura='+str(alumno.id_asignatura)+';'
+
+        cursor.execute(consulta1)
+        numAlumnos = cursor.fetchall()
+
+        cursor.execute(consulta2)
+        dep = cursor.fetchall()
+
+
+        if(len(numAlumnos) == 0):
+            grupo = 1
+            turno = "mañana"
+            #Creamos un nuevo grupo
+            cursor.execute("INSERT INTO \"Grupo\" VALUES ("
+                    + str(grupo) + ","
+                    + str(alumno.id_asignatura) + ","
+                    + str(dep[0][0])+ ","
+                    + "'" + str(turno)+ "',"
+                    + "'" + "teoria" + "',"
+                    + "'" + str(1)+ "',"
+                    + str(1) +");")
+
+        elif(numAlumnos[0][0] == 50):
+            grupo = 2
+            turno = 'tarde'
+            #Creamos un nuevo grupo
+            cursor.execute("INSERT INTO \"Grupo\" VALUES ("
+                    + str(grupo) + ","
+                    + str(alumno.id_asignatura) + ","
+                    + str(dep[0][0])+ ","
+                    + "'" + str(turno)+ "',"
+                    + "'" + "teoria" + "',"
+                    + "'" + str(1)+ "',"
+                    + str(1) +");")
+        else:
+            if(numAlumnos[0][0] <= 50):
+                #Actualizar grupo 1
+                grupo = 1
+                cursor.execute("UPDATE \"Grupo\""
+                +"SET \"totalAlumnos\" ="+str(numAlumnos[0][0]+1)
+                +"WHERE id_asignatura = "+str(alumno.id_asignatura)+" AND id_grupo = 1;")
+
+            else:
+                #Actualizar grupo 2
+                grupo = 2
+                cursor.execute("UPDATE \"Grupo\""
+                +"SET \"totalAlumnos\" ="+str(numAlumnos[0][0]+1)
+                +"WHERE id_asignatura = "+str(alumno.id_asignatura)+" AND id_grupo = 2;")
+
+        #Insertar datos en la tabla Pertenece
+        cursor.execute("INSERT INTO \"Pertenece\" VALUES("
+                + str(grupo) +","
+                + str(alumno.id_asignatura) +","
+                + str(dep[0][0]) +","
+                +"'"+ str(alumno.dni) +"');")
+
+        conex.commit()
+        conex.close()
+
+        return 'Grupo {} asignado al alumno'.format(grupo)
+    else:
+        return 'No se ha podido asignar un grupo'
     return 'do some magic!'
