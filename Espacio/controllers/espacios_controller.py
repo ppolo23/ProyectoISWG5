@@ -1,5 +1,8 @@
 import connexion
+import requests
+import json
 import psycopg2
+
 from swagger_server.models.alquilado import Alquilado
 from swagger_server.models.espacio import Espacio
 from swagger_server.models.reservado import Reservado
@@ -7,6 +10,10 @@ from datetime import date, datetime
 from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
+
+apiBase = "http://localhost:9500/apiPagos/"
+headers = {'Authorization': 'Bearer ', "Content-Type": "application/json", "data":"data"}
+
 
 def conectar():
 
@@ -40,26 +47,42 @@ def alquilar_espacio_put(alquilado):
 
     :rtype: None
     """
+
     if connexion.request.is_json:
         alquilado = Alquilado.from_dict(connexion.request.get_json())
-    
+
         conex = conectar()
         cursor = conex.cursor()
 
         try:
             cursor.execute(
-            "INSERT INTO alquilados VALUES (" + str(alquilado.cod_id) +
-                                            ",\'" + str(alquilado.fecha) + "\'" +
-                                            ",\'" + str(alquilado.hora_inicio) + "\'" +
-                                            ",\'" + str(alquilado.hora_fin) + "\'" + 
-                                            "," + str(alquilado.id_prof) + ");")
-        except Exception as e:
-            return e
+                "INSERT INTO alquilados VALUES (" + str(alquilado.cod_id) +
+                                        ",\'" + str(alquilado.fecha) + "\'" +
+                                        ",\'" + str(alquilado.hora_inicio) + "\'" +
+                                        ",\'" + str(alquilado.hora_fin) + "\'" + 
+                                        "," + str(alquilado.id_prof) + ");"
+            )
 
+            datos = {
+                "cod_id": alquilado.cod_id,
+                "fecha": alquilado.fecha,
+                "hora": alquilado.hora_inicio,
+                "id_prof": alquilado.id_prof,
+                "cantidad": 10
+            }
+
+            r = requests.put(apiBase + "insertarCobroEspacio", data=json.dumps(datos), headers=headers)
+            print(r)
+
+        except Exception as e:
+             print(e)
+             return lanzarError(str(e), 404, "Error", "about:blank")
+            
         conex.commit()
         conex.close()
 
-    return "Reserva correcta"
+        return {"status":"Alquiler correcto"}
+
 
 def espacio_cod_id_get(codId):
     """
@@ -73,13 +96,18 @@ def espacio_cod_id_get(codId):
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute(
-        "SELECT row_to_json(espacios) \
-         FROM espacios \
-         WHERE cod_id = " + str(codId) + ";"
-    )
+    try:
+        cursor.execute(
+            "SELECT row_to_json(espacios) \
+             FROM espacios \
+             WHERE cod_id = " + str(codId) + ";"
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
     conex.close()
 
@@ -102,16 +130,20 @@ def espacio_facultad_get(facultad):
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute(
-        "SELECT array_to_json(array_agg(row_to_json(espacios))) \
-         FROM \"espacios\" \
-         WHERE espacios.facultad = '" + str(facultad) + "';"
-    )
+    try:
+        cursor.execute(
+            "SELECT array_to_json(array_agg(row_to_json(espacios))) \
+             FROM \"espacios\" \
+            WHERE espacios.facultad = '" + str(facultad) + "';"
+        )
 
-    rows = cursor.fetchall()  #lista de elementos que contiene la query
+        rows = cursor.fetchall()
+
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
     conex.close()
-
 
     if len(rows) == 0:
         return lanzarError("Espacio no encontrado", 404, "Error", "about:blank")
@@ -130,18 +162,24 @@ def get_espacios_ocupados():
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute(
-       "SELECT array_to_json(array_agg(row_to_json(t)))\
-        FROM (SELECT DISTINCT espacios.cod_id, espacios.nombre, espacios.facultad, tipo, capacidad, preciohora\
-        FROM espacios, reservados, alquilados\
-        WHERE espacios.cod_id = reservados.cod_id OR espacios.cod_id = alquilados.cod_id) as t;"
+    try:
+        cursor.execute(
+            "SELECT array_to_json(array_agg(row_to_json(t)))\
+             FROM (SELECT DISTINCT espacios.cod_id, espacios.nombre, espacios.facultad, tipo, capacidad, preciohora\
+                  FROM espacios, reservados, alquilados\
+                  WHERE espacios.cod_id = reservados.cod_id OR espacios.cod_id = alquilados.cod_id) as t;"
         )
 
-    rows = cursor.fetchall()  #lista de elementos que contiene la query
+        rows = cursor.fetchall()
+
+
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
     conex.close()
 
-    if len(rows) == 0:
+    if rows == None:
         return lanzarError("No hay espacios ocupados", 404, "Error", "about:blank")
 
     else:
@@ -157,22 +195,28 @@ def get_espacios_libres():
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute("SELECT array_to_json(array_agg(row_to_json(t)))\
-                    FROM (SELECT espacios.cod_id, espacios.nombre, espacios.facultad, tipo, capacidad, preciohora\
-                          FROM espacios\
-                          WHERE espacios.cod_id NOT IN (SELECT cod_id FROM alquilados) AND \
-                                espacios.cod_id NOT IN (SELECT cod_id FROM reservados) \
-                          ) as t;"
-    )
+    try:
+        cursor.execute(
+            "SELECT array_to_json(array_agg(row_to_json(t)))\
+             FROM (SELECT espacios.cod_id, espacios.nombre, espacios.facultad, tipo, capacidad, preciohora\
+                   FROM espacios\
+                   WHERE espacios.cod_id NOT IN (SELECT cod_id FROM alquilados) AND \
+                         espacios.cod_id NOT IN (SELECT cod_id FROM reservados) \
+                   ) as t;"
+        )
 
-    rows = cursor.fetchall()  # lista de elementos que contiene la query
+        rows = cursor.fetchall()
+
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
+
     conex.close()
 
     if len(rows) == 0:
         return lanzarError('No hay espacios libres', 404, 'Error',
                            'about:blank')
     else:
-
         return rows[0][0]
 
 
@@ -186,12 +230,16 @@ def obtener_espacio():
     conex = conectar()
     cursor = conex.cursor()
 
-    cursor.execute(
-        "SELECT array_to_json(array_agg(row_to_json(espacios))) \
-         FROM espacios ;"
-    )
+    try:
+        cursor.execute(
+            "SELECT array_to_json(array_agg(row_to_json(espacios))) \
+            FROM espacios ;"
+        )
 
-    rows = cursor.fetchall()  #lista de elementos que contiene la query
+        rows = cursor.fetchall()  #lista de elementos que contiene la query
+    except Exception as e:
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
     conex.close()
 
@@ -208,7 +256,6 @@ def reserva_espacio_put(reservado):
     Reserva un unico espacio mediante un registro json
     :param reservado: Espacio que se necesita reservar
     :type reservado: dict | bytes
-
     :rtype: None
     """
     if connexion.request.is_json:
@@ -217,20 +264,25 @@ def reserva_espacio_put(reservado):
         conex = conectar()
         cursor = conex.cursor()
 
-        cursor.execute(
-            "INSERT INTO reservados VALUES (" + str(reservado.cod_id) +
+        try:
+            cursor.execute(
+                "INSERT INTO reservados VALUES (" + str(reservado.cod_id) +
                                             ",\'" + str(reservado.fecha_inicio) + "\'" +
                                             ",\'" + str(reservado.dia_semana) + "\'" +
                                             ",\'" + str(reservado.fecha_fin) + "\'" + 
                                             ",\'" + str(reservado.hora_inicio) + "\'" +
                                             ",\'" + str(reservado.hora_fin) + "\'" +
                                             "," + str(reservado.id_grupo) + ");"
-        )
+            )
+
+        except Exception as e:
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
 
         conex.commit()
         conex.close()
 
-        return "Reserva realizado con éxito"
+        return {"status":"Reserva realizado con éxito"}
 
     else:
         return lanzarError("Error", 404, "Error", "about:blank")
