@@ -32,33 +32,38 @@ def get_asignaturas_carrera(nombre):
 
     :rtype: List[str]
     """
-    conex=conectar()
-    cursor=conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    carrera = ["informatica","telecomunicaciones", "industrial"]
-    codigo = 0
+        carrera = ["informatica","telecomunicaciones", "industrial"]
+        codigo = 0
 
-    for i in range(0,3):
-        if(carrera[i] in nombre):
-            codigo = i+1
+        for i in range(0,3):
+            if (carrera[i] in nombre):
+                codigo = i+1
 
-    if(codigo == 0): return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
+        if (codigo == 0):
+            return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
 
-    consulta='SELECT "Asignatura".nombre \
-    FROM "Asignatura" inner join "Pertenece_" on "Asignatura"."CodAsignatura" = "Pertenece_"."CodAsignatura" \
-    WHERE "Pertenece_"."CodCarrera" =  '+ str(codigo) + ';'
+        cursor.execute(
+            'SELECT "Asignatura".nombre \
+             FROM "Asignatura" INNER JOIN "Pertenece_" ON "Asignatura"."CodAsignatura" = "Pertenece_"."CodAsignatura" \
+             WHERE "Pertenece_"."CodCarrera" =  '+ str(codigo) + ';'
+        )
 
-    cursor.execute(consulta)
+        rows = cursor.fetchall()
+        conex.close()
 
-    rows = cursor.fetchall()
+        if len(rows) == 0:
+            return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    conex.close()
-
-    if len(rows)==0:
-            return lanzarError("Carrera no encontrada",404,"Error","about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def obtener_carreras(tamanoPagina=None, numeroPaginas=None):
@@ -72,20 +77,24 @@ def obtener_carreras(tamanoPagina=None, numeroPaginas=None):
 
     :rtype: List[Carrera]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    consulta1= 'SELECT * FROM "Carrera" ;'
-    cursor.execute(
-        consulta1
-       )
+        cursor.execute(
+            'SELECT * \
+             FROM "Carrera";'
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("No hay carreras", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    if len(rows) == 0:
-        return lanzarError("No hay carreras", 404, "Error", "about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
