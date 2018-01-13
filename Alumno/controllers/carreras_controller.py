@@ -7,14 +7,20 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-#Metodo para conectarnos a la base de datos alumno
+# Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(
+        dbname = 'Universidad',
+        user = 'postgres',
+        password = 'madrid9',
+        host ='localhost',
+        port = '5433'
+    )
 
     return conexion
 
-#Metodo para lanzar los errores
+# Metodo para lanzar los errores
 def lanzarError(msg, status, title, typee):
     d = {}
     d["detail"] = msg
@@ -66,7 +72,7 @@ def get_asignaturas_carrera(nombre):
         return lanzarError(str(e), 404, "Error", "about:blank")
 
 
-def obtener_carreras(tamanoPagina=None, numeroPaginas=None):
+def obtener_carreras():
     """
     Devuelve todas las carreras
     Devuelve todas las carreras de la Universidad

@@ -246,7 +246,7 @@ def matricula(matricula):
         lanzarError("json no válido", 404, "Error", "about:blank")
 
 
-def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
+def obtener_alumnos():
     """
     Obtiene los alumnos
     Obtiene un listado de alumnos del sistema.

@@ -61,7 +61,7 @@ def get_datos_asignatura(nombre):
         return lanzarError(str(e), 404, "Error", "about:blank")
 
 
-def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
+def obtener_asignaturas():
     """
     Obtiene las asignaturas
     Obtiene un listado de las asignaturas de la universidad.
