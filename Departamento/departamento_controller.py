@@ -59,6 +59,7 @@ def borrar_departamento(codID):
         return {'status':'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)}
 
     except Exception as e:
+    	conex.close()
         print(e)
         return lanzarError(str(e), 404, "Error", "about:blank")
 
@@ -97,6 +98,7 @@ def crear_departamento(departamento):
             return {'status':'Departamento creado'}
 
         except Exception as e:
+        	conex.close()
             print(e)
             return lanzarError(str(e), 404, "Error", "about:blank")
 
@@ -133,6 +135,7 @@ def departamento_cod_id_get(codID):
             return rows[0][0]
 
     except Exception as e:
+    	conex.close()
         print(e)
         return lanzarError(str(e), 404, "Error", "about:blank")
 
@@ -167,6 +170,7 @@ def get_asignaturas_departamento(codID):
             return rows[0][0]
 
     except Exception as e:
+    	conex.close()
         print(e)
         return lanzarError(str(e), 404, "Error", "about:blank")
 
@@ -200,6 +204,7 @@ def obtener_departamento():
             return rows
 
     except Exception as e:
+    	conex.close()
         print(e)
         return lanzarError(str(e), 404, "Error", "about:blank")
 
@@ -291,4 +296,3 @@ def recibir_alumno(alumno):
         return 'Grupo {} asignado al alumno'.format(grupo)
     else:
         return 'No se ha podido asignar un grupo'
-    return 'do some magic!'
