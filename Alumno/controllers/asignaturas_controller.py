@@ -6,14 +6,20 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-#Metodo para conectarnos a la base de datos alumno
+# Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(
+        dbname = 'Universidad',
+        user = 'postgres',
+        password = 'madrid9',
+        host='localhost',
+        port = '5433'
+    )
 
     return conexion
 
-#Metodo para lanzar los errores
+# Metodo para lanzar los errores
 def lanzarError(msg, status, title, typee):
     d = {}
     d["detail"] = msg
@@ -31,24 +37,28 @@ def get_datos_asignatura(nombre):
 
     :rtype: Asignatura
     """
-    conex = conectar()
-    cursor=conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    consulta='SELECT * FROM "Asignatura" WHERE nombre =  \''+ nombre + '\';'
-
-    cursor.execute(
-        consulta
+        cursor.execute(
+            'SELECT * \
+             FROM "Asignatura" \
+             WHERE nombre =  \''+ nombre + '\';'
         )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+                return lanzarError("Asignatura no encontrada",404,"Error","about:blank")
+        else:
+            return rows
 
-    if len(rows)==0:
-            return lanzarError("Asignatura no encontrada",404,"Error","about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
@@ -62,20 +72,24 @@ def obtener_asignaturas(tamanoPagina=None, numeroPaginas=None):
 
     :rtype: List[Asignatura]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    consulta1= 'SELECT * FROM "Asignatura" ;'
-    cursor.execute(
-        consulta1
-       )
+        cursor.execute(
+            'SELECT * \
+             FROM "Asignatura" ;'
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("No hay asignaturas", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    if len(rows) == 0:
-        return lanzarError("No hay asignaturas", 404, "Error", "about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
