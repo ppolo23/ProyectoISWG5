@@ -7,14 +7,20 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-#Metodo para conectarnos a la base de datos alumno
+# Metodo para conectarnos a la base de datos alumno
 def conectar():
 
-    conexion = psycopg2.connect(dbname = 'Universidad',user = 'postgres', password = 'madrid9',host='localhost',port = '5433')
+    conexion = psycopg2.connect(
+        dbname = 'Universidad',
+        user = 'postgres',
+        password = 'madrid9',
+        host='localhost',
+        port = '5433'
+    )
 
     return conexion
 
-#Metodo para lanzar los errores
+# Metodo para lanzar los errores
 def lanzarError(msg, status, title, typee):
     d = {}
     d["detail"] = msg
@@ -32,15 +38,23 @@ def borrar_alumno(dni):
 
     :rtype: None
     """
-    consulta = 'DELETE FROM "Alumno" WHERE dni = \''+dni+'\' ;'
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(consulta)
+        consulta = 'DELETE FROM "Alumno" WHERE dni = \'' + dni + '\' ;'
+        cursor.execute(consulta)
 
-    conex.commit()
-    conex.close()
-    return 'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)
+        conex.commit()
+        conex.close()
+
+        return {'status':'Alumno con dni: {}, ha sido borrado del sistema'.format(dni)}
+
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
+
 
 #Se crean tantos registros como asignaturas tenga el alumno (ARREGLARLO)
 def get_alumno(dni):
@@ -52,24 +66,27 @@ def get_alumno(dni):
 
     :rtype: Alumno
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    consulta = 'SELECT "Alumno".*, "Cursa".* \
-    FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
-    WHERE "Alumno".dni =  \''+ dni + '\';'
+        consulta = 'SELECT "Alumno".*, "Cursa".* \
+                    FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
+                    WHERE "Alumno".dni =  \''+ dni + '\';'
 
-    cursor.execute(consulta)
+        cursor.execute(consulta)
+        rows = cursor.fetchall()
+        conex.close()
 
-    rows = cursor.fetchall()
+        if len(rows) == 0:
+            return lanzarError("Alumno no encontrado", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    conex.close()
-
-    if len(rows) == 0:
-        return lanzarError("Alumno no encontrado", 404, "Error", "about:blank")
-
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def get_alumnos_por_asignatura(asignatura):
@@ -81,24 +98,29 @@ def get_alumnos_por_asignatura(asignatura):
 
     :rtype: List[str]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        'SELECT "Alumno".nombre \
-         FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
-         WHERE "Cursa"."CodAsignatura" =  \''+ asignatura +'\';'
-    )
+        cursor.execute(
+            'SELECT "Alumno".nombre \
+             FROM "Cursa" inner join "Alumno" on "Cursa".dni = "Alumno".dni \
+             WHERE "Cursa"."CodAsignatura" =  \''+ asignatura +'\';'
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    if len(rows) == 0:
-        return lanzarError("No hay alumnos en esa asignatura", 404, "Error", "about:blank")
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
-    else:
-        return rows
 
 def get_alumnos_por_carrera(carrera):
     """
@@ -109,35 +131,39 @@ def get_alumnos_por_carrera(carrera):
 
     :rtype: List[str]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
+        carreras = ["informatica","industrial"]
+        codigo = 0
 
-    carreras = ["informatica","industrial"]
-    codigo = 0
+        for i in range(0,2):
+            if (carreras[i] in carrera):
+                codigo = i+1
 
-    for i in range(0,2):
-        if(carreras[i] in carrera):
-            codigo = i+1
+        if (codigo == 0):
+            return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
 
-    if(codigo == 0): return lanzarError("Carrera no encontrada", 404, "Error", "about:blank")
+        cursor.execute(
+            'SELECT "Alumno".nombre \
+            FROM "Matriculado" inner join "Alumno" on "Matriculado".dni = "Alumno".dni \
+            WHERE "Matriculado"."CodCarrera" =  '+ str(codigo) +';'
+        )
 
-    cursor.execute(
-        'SELECT "Alumno".nombre \
-         FROM "Matriculado" inner join "Alumno" on "Matriculado".dni = "Alumno".dni \
-         WHERE "Matriculado"."CodCarrera" =  '+ str(codigo) +';'
-    )
+        rows = cursor.fetchall()
+        conex.close()
 
-    rows = cursor.fetchall()
+        if len(rows) == 0:
+            return lanzarError("No hay alumnos en esa carrera", 404, "Error", "about:blank")
 
-    conex.close()
+        else:
+            return rows
 
-    if len(rows) == 0:
-        return lanzarError("No hay alumnos en esa carrera", 404, "Error", "about:blank")
-
-    else:
-        return rows
-
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def matricula(matricula):
@@ -150,55 +176,74 @@ def matricula(matricula):
     :rtype: None
     """
     if connexion.request.is_json:
+
         matricula = Matricula.from_dict(connexion.request.get_json())
 
-        cursoAcademico = str(datetime.now().year)+"/"+ str(datetime.now().year +1 )
-        credCurso = 60
+        try:
+            cursoAcademico = str(datetime.now().year) + "/" + str(datetime.now().year + 1)
+            credCurso = 60
             
-        conex = conectar()
-        cursor = conex.cursor()
+            conex = conectar()
+            cursor = conex.cursor()
 
-        #Sacamos los creditos optativos que tiene la carrera
-        cursor.execute('Select "creditosOptativos" from "Carrera" where "nombre" = (select grado from "Alumno" where id = \'' + str(matricula.id_alumno) + '\');')
-        credOptativos = cursor.fetchall()
+            # Sacamos los creditos optativos que tiene la carrera
+            cursor.execute('Select "creditosOptativos" from "Carrera" where "nombre" = (select grado from "Alumno" where id = \'' + str(matricula.id_alumno) + '\');')
+            credOptativos = cursor.fetchall()
 
-        credCurso = credCurso + (0.10 * int(credOptativos[0][0]))
+            credCurso = credCurso + (0.10 * int(credOptativos[0][0]))
+            creds = 0
 
-        creds = 0
-        #Calculamos el numero de creditos de los que se quiere matricular el alumno
-        for i in range(0,len(matricula.asignaturas)):
-            cursor.execute('Select creditos from "Asignatura" where "CodAsignatura" ='+ str(matricula.asignaturas[i]) +';')
-            credAsig = cursor.fetchall()
-            creds+= int(credAsig[0][0])
-        #Si el numero de creditos es mayor que el 10% de los creditos optativos del plan de estudios no se puede
-        if(creds>credCurso):
-            return 'No se puede matricular de tantas asignaturas'
+            # Calculamos el numero de creditos de los que se quiere matricular el alumno
+            for i in range(0, len(matricula.asignaturas)):
+                cursor.execute('Select creditos from "Asignatura" where "CodAsignatura" ='+ str(matricula.asignaturas[i]) +';')
+                credAsig = cursor.fetchall()
+                creds+= int(credAsig[0][0])
 
+            # Si el numero de creditos es mayor que el 10% de los creditos optativos del plan de estudios no se puede
+            if (creds > credCurso):
+                return {'status':'No se puede matricular de tantas asignaturas'}
 
-        #Comprobamos si el alumno ha realizado la reserva
-        cursor.execute('Select * from "Alumno" where id =\'' + str(matricula.id_alumno)+'\';')
-        alumno = cursor.fetchall()
-        if(alumno[0] == None):
-            return 'No ha efecutado la reserva de la matricula'
+            # Comprobamos si el alumno ha realizado la reserva
+            cursor.execute('Select * from "Alumno" where id =\'' + str(matricula.id_alumno)+'\';')
+            alumno = cursor.fetchall()
+
+            if (alumno[0] == None):
+                return {'status':'No ha efecutado la reserva de la matricula'}
         
-        asignaturasUni = ["Software","Programacion","Algoritmia"]
-        #Insertamos un registro por cada asignatura en Cursa
-        for i in range(0,len(matricula.asignaturas)):
-            consulta = ' INSERT INTO "Cursa" VALUES (\''+ str(alumno[0][0]) + '\' , \'' + str(matricula.asignaturas[i]) + '\' , \'' + str(asignaturasUni[matricula.asignaturas[i]-1]) +  '\',\''+str(cursoAcademico)+'\');'
-            cursor.execute(consulta)
+            asignaturasUni = ["Software","Programacion","Algoritmia"]
 
-        #Creamos el registro correspondiente en la tabla Matriculado
-        listaCarreras = {"Ingenieria informatica":1,"Ingenieria de telecomunicaciones":2,"Ingenieria industrial":3}
-        cursor.execute("INSERT INTO \"Matriculado\"(dni,\"CodCarrera\",\"cursoAcademico\",\"fechaLimite\",tipo_pago) VALUES("
-                            + "'" + str(alumno[0][0])+ "',"
-                            + str(listaCarreras[alumno[0][6]])+ ","
-                            + "'" + str(cursoAcademico) + "',"
-                            + " '31/01/2018' ,"
-                            + "'"+ matricula.plazo + "');")
+            # Insertamos un registro por cada asignatura en Cursa
+            for i in range(0, len(matricula.asignaturas)):
+                consulta = 'INSERT INTO "Cursa" VALUES (\''+ str(alumno[0][0]) + '\' , \'' + str(matricula.asignaturas[i]) + '\' , \'' + str(asignaturasUni[matricula.asignaturas[i]-1]) +  '\',\''+str(cursoAcademico)+'\');'
+                cursor.execute(consulta)
 
-        conex.commit()
+            # Creamos el registro correspondiente en la tabla Matriculado
+            listaCarreras = {
+                "Ingenieria informatica":1,
+                "Ingenieria de telecomunicaciones":2,
+                "Ingenieria industrial":3
+            }
 
-        return 'Matricula efectuada {}'.format(matricula.id_alumno)
+            cursor.execute(
+                "INSERT INTO \"Matriculado\"(dni,\"CodCarrera\",\"cursoAcademico\",\"fechaLimite\",tipo_pago) VALUES("
+                + "'" + str(alumno[0][0])+ "',"
+                + str(listaCarreras[alumno[0][6]])+ ","
+                + "'" + str(cursoAcademico) + "',"
+                + " '31/01/2018' ," + "'" 
+                + matricula.plazo + "');"
+            )
+
+            conex.commit()
+
+            return {'status':'Matricula efectuada {}'.format(matricula.id_alumno)}
+
+        except Exception as e:
+            conex.close()
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
+
+    else:
+        lanzarError("json no válido", 404, "Error", "about:blank")
 
 
 def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
@@ -212,23 +257,28 @@ def obtener_alumnos(tamanoPagina=None, numeroPaginas=None):
 
     :rtype: List[Alumno]
     """
-    conex = conectar()
-    cursor = conex.cursor()
+    try:
+        conex = conectar()
+        cursor = conex.cursor()
 
-    cursor.execute(
-        'SELECT dni,nombre,ape1 \
-         FROM "Alumno" ;'
-    )
+        cursor.execute(
+            'SELECT dni,nombre,ape1 \
+             FROM "Alumno" ;'
+        )
 
-    rows = cursor.fetchall()
+        rows = cursor.fetchall()
+        conex.close()
 
-    conex.close()
+        if len(rows) == 0:
+            return lanzarError("No hay alumnos", 404, "Error", "about:blank")
 
-    if len(rows) == 0:
-        return lanzarError("No hay alumnos", 404, "Error", "about:blank")
+        else:
+            return rows
 
-    else:
-        return rows
+    except Exception as e:
+        conex.close()
+        print(e)
+        return lanzarError(str(e), 404, "Error", "about:blank")
 
 
 def reserva(alumno):
@@ -241,37 +291,57 @@ def reserva(alumno):
     :rtype: None
     """
     if connexion.request.is_json:
+
         alumno = Alumno.from_dict(connexion.request.get_json())
 
-        conex = conectar()
-        cursor = conex.cursor()
+        try:
+            conex = conectar()
+            cursor = conex.cursor()
 
-        #Si el alumno ya se encuentra matriculado o ha efectuado la reserva
-        cursor.execute('SELECT * FROM "Alumno" WHERE dni = \''+str(alumno.dni) +'\';')
-        id = cursor.fetchall()
-        if(len(id) != 0):
-           return 'El alumno ya se encuentra matriculado'
+            # Si el alumno ya se encuentra matriculado o ha efectuado la reserva
+            cursor.execute(
+                'SELECT * \
+                 FROM "Alumno" \
+                 WHERE dni = \''+ str(alumno.dni) + '\';'
+            )
 
+            id = cursor.fetchall()
 
-        #Añadir a tabla columna grado, establecer en swagger enum de grado
+            if (len(id) != 0):
+                return {'status':'El alumno ya se encuentra matriculado'}
 
-        #Insertar el registro en la tabla Alumno
-        cursor.execute("INSERT INTO \"Alumno\" VALUES ("
-                    + "'" + str(alumno.dni)+ "',"
+            # Añadir a tabla columna grado, establecer en swagger enum de grado
+
+            # Insertar el registro en la tabla Alumno
+            cursor.execute(
+                "INSERT INTO \"Alumno\" VALUES ("
+                    + "'" + str(alumno.dni) + "',"
                     + "'" + str(alumno.nombre) + "',"
-                    + "'" + str(alumno.ape1)+ "',"
-                    + "'" + str(alumno.ape2)+ "',"
-                    + "'" + str(alumno.fecha)+ "',"
-                    + "'" + str(alumno.correo)+ "',"
-                    + "'" + str(alumno.grado)+ "');")
+                    + "'" + str(alumno.ape1) + "',"
+                    + "'" + str(alumno.ape2) + "',"
+                    + "'" + str(alumno.fecha) + "',"
+                    + "'" + str(alumno.correo) + "',"
+                    + "'" + str(alumno.grado) + "');"
+            )
 
-        conex.commit()
+            conex.commit()
 
-        #Obtenemos el codigo de identificacion que se le ha asignado
-        cursor.execute('SELECT id FROM "Alumno" where dni = \''+ str(alumno.dni)+'\';')
+            # Obtenemos el codigo de identificacion que se le ha asignado
+            cursor.execute(
+                'SELECT id \
+                 FROM "Alumno" \
+                 WHERE dni = \''+ str(alumno.dni) + '\';'
+            )
 
-        codigo = cursor.fetchall()
+            codigo = cursor.fetchall()
+            conex.close()
 
-        conex.close()
+            return {'status':'Reserva realizada. Codigo de identificación: {}'.format(codigo[0][0])}
 
-    return 'Reserva realizada. Codigo de identificación: {}'.format(codigo[0][0])
+        except Exception as e:
+            conex.close()
+            print(e)
+            return lanzarError(str(e), 404, "Error", "about:blank")
+
+    else:
+        lanzarError("json no válido", 404, "Error", "about:blank")
