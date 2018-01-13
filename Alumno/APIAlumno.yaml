@@ -23,19 +23,7 @@ paths:
       description: Obtiene un listado de alumnos del sistema.
       operationId: obtener_alumnos
       produces:
-        - application/xml
         - application/json
-      parameters:
-        - name: tamanoPagina
-          in: query
-          description: Número de alumnos devueltas
-          required: false
-          type: integer
-        - name: numeroPaginas
-          in: query
-          description: Número de páginas devueltas
-          required: false
-          type: integer
       responses:
         '200':
           description: Una lista de alumnos
@@ -53,9 +41,7 @@ paths:
       operationId: reserva
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - in: body
@@ -79,9 +65,7 @@ paths:
       operationId: matricula
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - in: body
@@ -105,9 +89,7 @@ paths:
       operationId: get_alumno
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: dni
@@ -133,9 +115,7 @@ paths:
       operationId: borrar_alumno
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: dni
@@ -158,9 +138,7 @@ paths:
       operationId: get_alumnos_por_carrera
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: carrera
@@ -191,9 +169,7 @@ paths:
       operationId: get_alumnos_por_asignatura
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: asignatura
@@ -219,19 +195,7 @@ paths:
       description: Obtiene un listado de las asignaturas de la universidad.
       operationId: obtener_asignaturas
       produces:
-        - application/xml
         - application/json
-      parameters:
-        - name: tamanoPagina
-          in: query
-          description: Número de asignaturas devueltas
-          required: false
-          type: integer
-        - name: numeroPaginas
-          in: query
-          description: Número de páginas devueltas
-          required: false
-          type: integer
       responses:
         '200':
           description: Una lista de asignaturas
@@ -249,9 +213,7 @@ paths:
       operationId: get_datos_asignatura
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: nombre
@@ -275,19 +237,7 @@ paths:
       description: Devuelve todas las carreras de la Universidad
       operationId: obtener_carreras
       produces:
-        - application/xml
         - application/json
-      parameters:
-        - name: tamanoPagina
-          in: query
-          description: Número de carreras devueltas
-          required: false
-          type: integer
-        - name: numeroPaginas
-          in: query
-          description: Número de páginas devueltas
-          required: false
-          type: integer
       responses:
         '200':
           description: Las carreras de la Universidad.
@@ -305,9 +255,7 @@ paths:
       operationId: get_asignaturas_carrera
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: nombre
