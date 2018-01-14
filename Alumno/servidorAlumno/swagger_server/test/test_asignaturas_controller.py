@@ -28,11 +28,8 @@ class TestAsignaturasController(BaseTestCase):
 
         Obtiene todas las asignaturas
         """
-        query_string = [('tamanoPagina', 56),
-                        ('numeroPaginas', 56)]
         response = self.client.open('/apiAlumno/asignaturas',
-                                    method='GET',
-                                    query_string=query_string)
+                                    method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
 

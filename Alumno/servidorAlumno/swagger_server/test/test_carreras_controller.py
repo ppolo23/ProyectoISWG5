@@ -28,11 +28,8 @@ class TestCarrerasController(BaseTestCase):
 
         Devuelve todas las carreras
         """
-        query_string = [('tamanoPagina', 56),
-                        ('numeroPaginas', 56)]
         response = self.client.open('/apiAlumno/carreras',
-                                    method='GET',
-                                    query_string=query_string)
+                                    method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
 
