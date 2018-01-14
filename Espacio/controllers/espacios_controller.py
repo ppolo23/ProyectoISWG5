@@ -11,7 +11,7 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-apiBase = "http://localhost:9500/apiPagos/"
+apiBase = "http://localhost:6000/apiPagos/"
 headers = {'Authorization': 'Bearer ', "Content-Type": "application/json", "data":"data"}
 
 
