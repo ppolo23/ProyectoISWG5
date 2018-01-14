@@ -7,6 +7,9 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
+apiBase = "http://localhost:8081/dep/"
+headers = {'Authorization': 'Bearer ', "Content-Type": "application/json", "data":"data"}
+
 # Metodo para conectarnos a la base de datos alumno
 def conectar():
 
@@ -234,6 +237,17 @@ def matricula(matricula):
             )
 
             conex.commit()
+
+            #Realizamos la llamada a la operacion de Departamento en su servidor propio para enviarle los datos que necesita
+            for i in range (len(matricula.asignaturas)):
+                datos = {
+
+                    "dni": str(alumno[0][0]),
+                    "nombre": str(alumno[0][1]),
+                    "id_asignatura": matricula.asignaturas[i],
+                    "nombreAsignatura": str(asignaturasUni[matricula.asignaturas[i]-1])
+                }
+                r = requests.post(apiBase + "asignarGrupo", data=json.dumps(datos), headers=headers)
 
             return {'status':'Matricula efectuada {}'.format(matricula.id_alumno)}
 

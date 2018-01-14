@@ -5,8 +5,8 @@ info:
     \ departamento"
   version: "1.0.0"
   title: "Departamento"
-host: "localhost:8080"
-basePath: "/APIdepartamento"
+host: "localhost:8081"
+basePath: "/dep"
 tags:
 - name: "Departamento"
   description: "Operaciones sobre departamentos"
@@ -21,8 +21,19 @@ paths:
       description: "Obtiene un listado de los departamentos existentes en el sistema"
       operationId: "obtener_departamento"
       produces:
+      - "application/xml"
       - "application/json"
-      parameters: []
+      parameters:
+      - name: "tamagnoPagina"
+        in: "query"
+        description: "número de departamentos devueltos"
+        required: false
+        type: "integer"
+      - name: "numeroPagina"
+        in: "query"
+        description: "número de páginas devueltas"
+        required: false
+        type: "integer"
       responses:
         200:
           description: "Una lista de departamentos"
@@ -40,7 +51,9 @@ paths:
       operationId: "crear_departamento"
       consumes:
       - "application/json"
+      - "application/xml"
       produces:
+      - "application/xml"
       - "application/json"
       parameters:
       - in: "body"
@@ -61,10 +74,12 @@ paths:
       - "Departamento"
       summary: "Asigna grupo al alumno"
       description: "Recibe datos alumno y le asigna un grupo de una asignatura determinada"
-      operationId: "recibir_alumno"
+      operationId: "asignar_grupo"
       consumes:
       - "application/json"
+      - "application/xml"
       produces:
+      - "application/xml"
       - "application/json"
       parameters:
       - in: "body"
@@ -109,7 +124,9 @@ paths:
       operationId: "borrar_departamento"
       consumes:
       - "application/json"
+      - "application/xml"
       produces:
+      - "application/xml"
       - "application/json"
       parameters:
       - name: "codID"
@@ -132,7 +149,9 @@ paths:
       operationId: "get_asignaturas_departamento"
       consumes:
       - "application/json"
+      - "application/xml"
       produces:
+      - "application/xml"
       - "application/json"
       parameters:
       - name: "codID"
@@ -153,7 +172,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Asignatura"
+              $ref: "#/definitions/Departamento"
         404:
           description: "No hay alumnos matriculados en esa carrera."
       x-swagger-router-controller: "swagger_server.controllers.departamento_controller"
@@ -185,13 +204,4 @@ definitions:
       id_asignatura:
         type: "integer"
       nombreAsignatura:
-        type: "string"
-  Asignatura:
-    type: "object"
-    properties:
-      id_asignatura:
-        type: "integer"
-      id_departamento:
-        type: "integer"
-      nombre:
         type: "string"
