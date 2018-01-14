@@ -7,5 +7,5 @@ from .encoder import JSONEncoder
 if __name__ == '__main__':
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = JSONEncoder
-    app.add_api('swagger.yaml', arguments={'title': 'API para la consulta de pagos'})
-    app.run(port=6000)
+    app.add_api('swagger.yaml', arguments={'title': 'API para la gestión de los alumnos de la Universidad'})
+    app.run(port=5000)

@@ -4,7 +4,7 @@ info:
   description: "API para la gestion de espacios"
   version: "1.0.0"
   title: "API espacios"
-host: "localhost:8080"
+host: "localhost:9000"
 basePath: "/APIespacios"
 tags:
 - name: "Espacios"
