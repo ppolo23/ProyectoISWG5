@@ -8,4 +8,4 @@ if __name__ == '__main__':
     app = connexion.App(__name__, specification_dir='./swagger/')
     app.app.json_encoder = JSONEncoder
     app.add_api('swagger.yaml', arguments={'title': 'API para la gestion de espacios'})
-    app.run(port=9000)
+    app.run(port=7000)
