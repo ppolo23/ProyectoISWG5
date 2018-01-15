@@ -12,11 +12,11 @@ from ..util import deserialize_date, deserialize_datetime
 def conectar():
 
     conexion = psycopg2.connect(
-        database = "departamento",
+        database = "Departamento",
         user = "postgres",
-        password = "postgres",
-        host = "127.0.0.1",
-        port = "5432"
+        password = "madrid9",
+        host = "localhost",
+        port = "5433"
     )
 
     return conexion
