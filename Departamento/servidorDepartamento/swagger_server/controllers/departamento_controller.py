@@ -227,6 +227,13 @@ def recibir_alumno(alumno):
         conex = conectar()
         cursor = conex.cursor()
 
+        cursor.execute('Select dni from "Alumno" where dni =\''+ alumno.dni +'\';')
+        al = cursor.fetchall()
+
+        if(len(al) == 0):
+                #Insertamos los datos del alumno en la tabla Alumno
+                cursor.execute('Insert into "Alumno" values(\''+str(alumno.dni)+'\' , \''+str(alumno.nombre)+ '\');')
+
         # Insertamos los datos del alumno en la tabla Alumno
         cursor.execute(
             'INSERT INTO "Alumno" \
