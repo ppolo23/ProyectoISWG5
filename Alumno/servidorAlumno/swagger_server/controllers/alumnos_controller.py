@@ -7,7 +7,7 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-apiBase = "http://localhost:8081/dep/"
+apiBase = "http://localhost:8080/dep/"
 headers = {'Authorization': 'Bearer ', "Content-Type": "application/json", "data":"data"}
 
 # Metodo para conectarnos a la base de datos alumno
