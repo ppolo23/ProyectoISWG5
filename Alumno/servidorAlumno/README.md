@@ -21,7 +21,7 @@ python3 -m swagger_server
 and open your browser to here:
 
 ```
-http://localhost:8080/apiAlumno/ui/
+http://localhost:5000/apiAlumno/ui/
 ```
 
 Your Swagger definition lives here:
